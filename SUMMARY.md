@@ -9,8 +9,8 @@
   * [Offer types](smart-contracts/pwn/offer-types.md)
 * [PWN Vault](smart-contracts/pwn-vault.md)
 * [PWN LOAN](smart-contracts/pwn-loan.md)
-* [MultiToken](smart-contracts/multitoken.md)
 * [Token Bundler](smart-contracts/token-bundler.md)
+* [MultiToken](smart-contracts/multitoken.md)
 
 ## More documentation
 
