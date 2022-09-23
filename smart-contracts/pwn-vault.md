@@ -17,7 +17,7 @@ All approval of tokens utilized within the PWN context has to be done towards th
 * **Deployment addresses**
   * Mainnet: [0x_b98efe56decceb1bec9faeeaf62500deb0953474_](https://etherscan.io/address/0xb98efe56decceb1bec9faeeaf62500deb0953474)__
   * Polygon: [0x_aF0d978275a2e7e3109F8C6307Ffd281774C623E_](https://polygonscan.com/address/0xaF0d978275a2e7e3109F8C6307Ffd281774C623E)__
-  * Goerli: [0x_DBdb041842407c109F65b23eA86D99c1E0D94522_](https://goerli.etherscan.io/address/0xDBdb041842407c109F65b23eA86D99c1E0D94522)__
+  * Görli: [0x_DBdb041842407c109F65b23eA86D99c1E0D94522_](https://goerli.etherscan.io/address/0xDBdb041842407c109F65b23eA86D99c1E0D94522)__
   * Mumbai: [0x_2fd4B676192C701778724408B72e9A29af2eB8c0_](https://mumbai.polygonscan.com/address/0x2fd4B676192C701778724408B72e9A29af2eB8c0)__
   * Rinkeby (deprecated): [0x_2f705615E25D705813cC0E29f4225Db0EDB82eCa_](https://rinkeby.etherscan.io/address/0x2f705615E25D705813cC0E29f4225Db0EDB82eCa)__
 * **Source code**

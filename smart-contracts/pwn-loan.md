@@ -9,7 +9,7 @@ PWN LOAN is a PWN contextual extension of a standard [ERC1155](https://eips.ethe
 * **Deployment addresses**
   * Mainnet: [0x_cFe385287200F0c10a54100e9b22855A73664156_](https://etherscan.io/address/0xcFe385287200F0c10a54100e9b22855A73664156)__
   * Polygon: [0x_8680AEE63E48AACB51Ddc5Ad15979FC169C1cf2B_](https://polygonscan.com/address/0x8680AEE63E48AACB51Ddc5Ad15979FC169C1cf2B)__
-  * Goerli: [0x_c9E94453d182c50984A2a4afdD60796D25B027Aa_](https://goerli.etherscan.io/address/0xc9E94453d182c50984A2a4afdD60796D25B027Aa)__
+  * Görli: [0x_c9E94453d182c50984A2a4afdD60796D25B027Aa_](https://goerli.etherscan.io/address/0xc9E94453d182c50984A2a4afdD60796D25B027Aa)__
   * Mumbai: [0x_7C995e64a24aCb5806521276697B244D1f65f708_](https://mumbai.polygonscan.com/address/0x7C995e64a24aCb5806521276697B244D1f65f708)__
   * Rinkeby (deprecated): [0x_C33B746Ac85703178D5a796f960b5e855172e7F7_](https://rinkeby.etherscan.io/address/0xC33B746Ac85703178D5a796f960b5e855172e7F7)__
 * **Source code**
