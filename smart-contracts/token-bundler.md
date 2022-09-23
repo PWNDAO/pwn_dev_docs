@@ -12,7 +12,10 @@ The contract enables **bundling ERC20, ERC721, and/or ERC1155 tokens into a sing
   * Görli: [0x_A0610921062f99D720710d9763EE8cb1fCF7a845_](https://goerli.etherscan.io/address/0xA0610921062f99D720710d9763EE8cb1fCF7a845)__
   * Mumbai: [0x_a5e63d2d2DcA259270b6B8FeD95e0b420d929e58_](https://mumbai.polygonscan.com/address/0xa5e63d2d2DcA259270b6B8FeD95e0b420d929e58)__
 * **Source code**
-  * [GitHub](https://github.com/PWNFinance/TokenBundler/tree/master)
+  * [GitHub](https://github.com/PWNFinance/TokenBundler/tree/master)****
+* **ABI**
+  * [JSON](https://api.etherscan.io/api?module=contract\&action=getabi\&address=0x19e3293196aee99BB3080f28B9D3b4ea7F232b8d)
+  * [Text](http://api.etherscan.io/api?module=contract\&action=getabi\&address=0x19e3293196aee99BB3080f28B9D3b4ea7F232b8d\&format=raw)
 
 ## 3. Contract Details
 
