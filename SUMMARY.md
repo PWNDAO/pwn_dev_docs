@@ -14,5 +14,5 @@
 
 ## More documentation
 
-* [PWN](https://docs.pwn.xyz/)
+* [PWN Docs](https://docs.pwn.xyz/)
 * [FAQ](https://faq.pwn.xyz/)
