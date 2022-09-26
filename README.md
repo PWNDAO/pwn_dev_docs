@@ -8,7 +8,7 @@ PWN protocol is a decentralized and permissionless set of smart contracts. With 
 
 ### Our architecture
 
-![](.gitbook/assets/PWN\_contracts-Architecture.drawio.png)
+<figure><img src=".gitbook/assets/Architecture.png" alt=""><figcaption><p>PWN smart contract architecture</p></figcaption></figure>
 
 {% tabs %}
 {% tab title="PWN" %}
@@ -25,6 +25,10 @@ PWN LOAN is used to store information about LOANs. LOAN is an ERC-1155 token rep
 
 {% tab title="MultiToken" %}
 MultiToken is a solidity library that wraps transfer, allowance and balance check calls for ERC20, ERC721 & ERC1155 tokens. Unifying the function calls used within the PWN context, so we don't have to worry about handling these token standards individually.
+{% endtab %}
+
+{% tab title="Token Bundler" %}
+Token Bundler is an independent contract enabling bundling of ERC20, ERC721, and/or ERC1155 tokens into a single ERC1155 token (the Bundle token).
 {% endtab %}
 {% endtabs %}
 
