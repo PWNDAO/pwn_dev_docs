@@ -33,7 +33,7 @@ The PWN LOAN token is a tokenized representation of a loan that can aquire diffe
 
 #### State diagram
 
-![](<../.gitbook/assets/PWN\_contracts-State diagram.drawio (1).png>)
+<figure><img src="../.gitbook/assets/image.png" alt=""><figcaption><p>LOAN token life cycle diagram</p></figcaption></figure>
 
 ### Loan token struct
 
