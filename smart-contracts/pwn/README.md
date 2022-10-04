@@ -41,7 +41,7 @@ A borrower can accept an existing signed off-chain offer by calling the `createL
 
 The diagram below shows the high-level logic of the function.
 
-![](../../.gitbook/assets/PWN\_Flowcharts-createDeed.drawio-dark2.png)
+&#x20;                                             ![](<../../.gitbook/assets/createLoan diagram.svg>)                                             &#x20;
 
 This function takes two arguments supplied by the caller (borrower):
 
@@ -84,7 +84,7 @@ This function assumes approval of all used assets to PWN Vault. If any of the us
 
 The diagram below shows the high-level logic of the function.
 
-![](../../.gitbook/assets/PWN\_Flowcharts-repayLoan.drawio.png)
+&#x20;                                             ![](<../../.gitbook/assets/repayLoan diagram.svg>)                                             &#x20;
 
 This function takes one argument supplied by the caller:
 
@@ -96,7 +96,7 @@ The owner of a LOAN token (usually the lender) can call this function to claim a
 
 The diagram below shows the high-level logic of the function.
 
-![](../../.gitbook/assets/PWN\_Flowcharts-claimDeed.drawio-dark.png)
+&#x20;                                             ![](../../.gitbook/assets/claimLoan.svg)                                             &#x20;
 
 This function takes one argument supplied by the caller:
 
