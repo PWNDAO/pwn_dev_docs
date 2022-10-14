@@ -1,6 +1,7 @@
 # Table of contents
 
 * [Welcome!](README.md)
+* [Audit](https://audit.pwn.xyz/)
 
 ## Smart contracts
 
