@@ -1,7 +1,6 @@
 # Table of contents
 
 * [Welcome!](README.md)
-* [Audit](https://audit.pwn.xyz/)
 
 ## Smart contracts
 
@@ -17,3 +16,4 @@
 
 * [PWN Docs](https://docs.pwn.xyz/)
 * [FAQ](https://faq.pwn.xyz/)
+* [Audit](https://audit.pwn.xyz/)

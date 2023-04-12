@@ -7,12 +7,12 @@ The contract enables **bundling ERC20, ERC721, and/or ERC1155 tokens into a sing
 ## 2. Important links
 
 * **Deployment addresses**
-  * Mainnet: [0x_19e3293196aee99BB3080f28B9D3b4ea7F232b8d_](https://etherscan.io/address/0x19e3293196aee99BB3080f28B9D3b4ea7F232b8d)__
-  * Polygon: [0x_e52405604bF644349f57b36Ca6E85cf095faB8dA_](https://polygonscan.com/address/0xe52405604bf644349f57b36ca6e85cf095fab8da)__
-  * Görli: [0x_A0610921062f99D720710d9763EE8cb1fCF7a845_](https://goerli.etherscan.io/address/0xA0610921062f99D720710d9763EE8cb1fCF7a845)__
-  * Mumbai: [0x_a5e63d2d2DcA259270b6B8FeD95e0b420d929e58_](https://mumbai.polygonscan.com/address/0xa5e63d2d2DcA259270b6B8FeD95e0b420d929e58)__
+  * Mainnet: [0x_19e3293196aee99BB3080f28B9D3b4ea7F232b8d_](https://etherscan.io/address/0x19e3293196aee99BB3080f28B9D3b4ea7F232b8d)
+  * Polygon: [0x_e52405604bF644349f57b36Ca6E85cf095faB8dA_](https://polygonscan.com/address/0xe52405604bf644349f57b36ca6e85cf095fab8da)
+  * Görli: [0x_A0610921062f99D720710d9763EE8cb1fCF7a845_](https://goerli.etherscan.io/address/0xA0610921062f99D720710d9763EE8cb1fCF7a845)
+  * Mumbai: [0x_a5e63d2d2DcA259270b6B8FeD95e0b420d929e58_](https://mumbai.polygonscan.com/address/0xa5e63d2d2DcA259270b6B8FeD95e0b420d929e58)
 * **Source code**
-  * [GitHub](https://github.com/PWNFinance/TokenBundler/tree/master)****
+  * [GitHub](https://github.com/PWNFinance/TokenBundler/tree/master)
 * **ABI**
   * [JSON](https://api.etherscan.io/api?module=contract\&action=getabi\&address=0x19e3293196aee99BB3080f28B9D3b4ea7F232b8d)
   * [Text](http://api.etherscan.io/api?module=contract\&action=getabi\&address=0x19e3293196aee99BB3080f28B9D3b4ea7F232b8d\&format=raw)
@@ -23,83 +23,203 @@ The contract enables **bundling ERC20, ERC721, and/or ERC1155 tokens into a sing
 
 ### Features
 
-The owner of the bundle NFT has rights to:
+The owner of the bundle token has rights to:
 
 * Transferring ownership of the bundle token to another address
 * Unwrap the entire bundle resulting in burning the bundle token and gaining ownership over the wrapped tokens
 
-## Functions
+### Inherited Contracts
 
-This contract inherits from the ERC1155 token standard. This comes with all of the ERC1155 functionalities like transfers etc. Please read the [ERC1155](https://eips.ethereum.org/EIPS/eip-1155) specification for more details.&#x20;
+Token Bundler inherits other contracts and implements certain interfaces. Please see their reference for a complete overview.
 
-### **`create`**
+* [**Ownable**](https://docs.openzeppelin.com/contracts/2.x/api/ownership#Ownable)
+* [**ERC1155**](https://eips.ethereum.org/EIPS/eip-1155)
+* [**IERC1155Receiver**](https://docs.openzeppelin.com/contracts/4.x/api/token/erc1155#IERC1155Receiver)
+* [**IERC721Receiver**](https://docs.openzeppelin.com/contracts/4.x/api/token/erc721#IERC721Receiver)
+* [**ITokenBundler**](https://github.com/PWNFinance/TokenBundler/blob/master/src/ITokenBundler.sol)
 
-Mint bundle token and transfers assets to Bundler contract.
+### Functions
 
-{% hint style="warning" %}
-Make sure to approve all bundled assets towards the Token Bundler contract before calling this function.
-{% endhint %}
+<details>
+
+<summary><code>create</code></summary>
+
+#### Overview
+
+This function mints a bundle token and transfers assets to the Bundler contract.
+
+<mark style="color:yellow;">Make sure to approve all bundled assets towards the Token Bundler contract before calling this function.</mark>
 
 This function takes one argument:
 
 * `MultiToken.Asset[] memory`**`_assets`** - List of assets to include in a bundle
 
-{% hint style="info" %}
 See [MultiToken](multitoken.md) for more information about the argument type.
-{% endhint %}
 
-Returns:
+The function returns the ID of the created bundle.
 
-* `uint256` - Bundle id
+#### Implementation
 
-### `unwrap`
+```solidity
+function create(MultiToken.Asset[] memory _assets) override external returns (uint256 bundleId) {
+    uint256 length = _assets.length;
+    require(length > 0, "Need to bundle at least one asset");
+    require(length <= type(uint256).max - _nonce, "Bundler out of capacity");
 
-Burns the bundle token and transfers assets to the caller.
+    bundleId = ++_id;
+    uint256 _bundleNonce = _nonce;
+    unchecked { _nonce += length; }
 
-{% hint style="warning" %}
-The caller of this function has to be the bundle owner.&#x20;
-{% endhint %}
+    for (uint i; i < length;) {
+        unchecked { ++_bundleNonce; }
+
+        _tokens[_bundleNonce] = _assets[i];
+        _bundles[bundleId].push(_bundleNonce);
+
+        _assets[i].transferAssetFrom(msg.sender, address(this));
+
+        unchecked { ++i; }
+    }
+
+    _mint(msg.sender, bundleId, 1, "");
+
+    emit BundleCreated(bundleId, msg.sender);
+}
+```
+
+</details>
+
+<details>
+
+<summary><code>unwrap</code></summary>
+
+#### Overview
+
+This function burns the bundle token and transfers assets to the caller.
+
+<mark style="color:green;">The caller has to be the bundle owner.</mark>&#x20;
 
 This function takes one argument:
 
 * `uint256`**`_bundleId`** - Bundle id to unwrap
 
+#### Implementation
+
+```solidity
+function unwrap(uint256 _bundleId) override external {
+    require(balanceOf(msg.sender, _bundleId) == 1, "Sender is not bundle owner");
+
+    uint256[] memory tokenList = _bundles[_bundleId];
+
+    uint256 length = tokenList.length;
+    for (uint i; i < length;) {
+        _tokens[tokenList[i]].transferAsset(msg.sender);
+        delete _tokens[tokenList[i]];
+
+        unchecked { ++i; }
+    }
+
+    delete _bundles[_bundleId];
+
+    _burn(msg.sender, _bundleId, 1);
+
+    emit BundleUnwrapped(_bundleId);
+}
+```
+
+</details>
+
 ### View functions
 
-Functions that don't modify the state of the contract. These functions are used to get information about the bundle token.
+<details>
 
-#### **`token`**
+<summary><strong><code>token</code></strong></summary>
+
+#### **Overview**
 
 Each token has its nonce. This function returns an Asset struct (see [MultiToken](multitoken.md#asset-struct)) for a provided token nonce.&#x20;
 
 This function takes one argument:
 
-* `uint265`` `**`_tokenId`** - Token nonce from bundle asset list.
+* `uint265`` `**`_tokenId`** - Token nonce from the bundle asset list.
 
-#### **`bundle`**
+#### Implementation
 
-Returns a list of assets in a bundle as a `uint256[]`.
+```solidity
+function token(uint256 _tokenId) override external view returns (MultiToken.Asset memory) {
+    return _tokens[_tokenId];
+}
+```
+
+</details>
+
+<details>
+
+<summary><code>bundle</code></summary>
+
+#### Overview
+
+Returns an array of asset IDs in a bundle as a `uint256[]`.
 
 This function takes one argument:
 
 * `uint256`**`_bundleId`** - Bundle id
 
-#### **`maxSize`**
+#### Implementation
 
-Returns maximum bundle size.&#x20;
+```solidity
+function bundle(uint256 _bundleId) override external view returns (uint256[] memory) {
+    return _bundles[_bundleId];
+}
+```
 
-This function does not take any argument.
+</details>
+
+<details>
+
+<summary><code>tokensInBundle</code></summary>
+
+#### Overview
+
+Returns an array of assets in a bundle. Each asset is represented as an Asset struct (see [MultiToken](multitoken.md#asset-struct)).
+
+This function takes one argument:
+
+* `uint256`**`_bundleId`** - Bundle id
+
+#### Implementation
+
+```solidity
+function tokensInBundle(uint256 _bundleId) override external view returns (MultiToken.Asset[] memory) {
+    uint256[] memory tokenList = _bundles[_bundleId];
+    uint256 length = tokenList.length;
+
+    MultiToken.Asset[] memory tokens = new MultiToken.Asset[](length);
+
+    for (uint256 i; i < length;) {
+        tokens[i] = _tokens[tokenList[i]];
+
+        unchecked { ++i; }
+    }
+
+    return tokens;
+}
+```
+
+</details>
 
 ## Events
 
-Token Bundler contract defines two events and no custom errors.
+The Token Bundler contract doesn't define any events or custom errors and inherits events from [**ITokenBundler**](https://github.com/PWNFinance/TokenBundler/blob/master/src/ITokenBundler.sol)**,** [**ERC1155**](https://eips.ethereum.org/EIPS/eip-1155)**, and** [**Ownable**](https://docs.openzeppelin.com/contracts/2.x/api/ownership#Ownable)**.** We will cover events inherited from the [ITokenBunder](https://github.com/PWNFinance/TokenBundler/blob/master/src/ITokenBundler.sol) interface. Please see the reference for [ERC1155](https://eips.ethereum.org/EIPS/eip-1155) and [Ownable](https://docs.openzeppelin.com/contracts/2.x/api/ownership#Ownable) for a complete overview.&#x20;
 
-```
+```solidity
 event BundleCreated(uint256 indexed id, address indexed creator);
 event BundleUnwrapped(uint256 indexed id);
 ```
 
-### `BundleCreated`
+<details>
+
+<summary><strong><code>BundleCreated</code></strong></summary>
 
 BundleCreated event is emitted when a new bundle is created.
 
@@ -108,10 +228,16 @@ This event has two parameters:
 * `uint256 indexed`**`id`** - Id of the bundle
 * `address indexed`**`creator`** - Address of the bundle creator
 
-### `BundleUnwrapped`
+</details>
+
+<details>
+
+<summary><code>BundleUnwrapped</code></summary>
 
 BundleUnwrapped event is emitted when a bundle is unwrapped and burned.
 
 This event has one parameter:
 
 * `uint256 indexed`**`id`** - Id of the unwrapped bundle.&#x20;
+
+</details>
