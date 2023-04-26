@@ -6,16 +6,18 @@ The contract enables **bundling ERC20, ERC721, and/or ERC1155 tokens into a sing
 
 ## 2. Important links
 
-* **Deployment addresses**
-  * Mainnet: [0x_19e3293196aee99BB3080f28B9D3b4ea7F232b8d_](https://etherscan.io/address/0x19e3293196aee99BB3080f28B9D3b4ea7F232b8d)
-  * Polygon: [0x_e52405604bF644349f57b36Ca6E85cf095faB8dA_](https://polygonscan.com/address/0xe52405604bf644349f57b36ca6e85cf095fab8da)
-  * Görli: [0x_A0610921062f99D720710d9763EE8cb1fCF7a845_](https://goerli.etherscan.io/address/0xA0610921062f99D720710d9763EE8cb1fCF7a845)
-  * Mumbai: [0x_a5e63d2d2DcA259270b6B8FeD95e0b420d929e58_](https://mumbai.polygonscan.com/address/0xa5e63d2d2DcA259270b6B8FeD95e0b420d929e58)
-* **Source code**
-  * [GitHub](https://github.com/PWNFinance/TokenBundler/tree/master)
-* **ABI**
-  * [JSON](https://api.etherscan.io/api?module=contract\&action=getabi\&address=0x19e3293196aee99BB3080f28B9D3b4ea7F232b8d)
-  * [Text](http://api.etherscan.io/api?module=contract\&action=getabi\&address=0x19e3293196aee99BB3080f28B9D3b4ea7F232b8d\&format=raw)
+* Mainnet: [0x_19e3293196aee99BB3080f28B9D3b4ea7F232b8d_](https://etherscan.io/address/0x19e3293196aee99BB3080f28B9D3b4ea7F232b8d)
+* Polygon: [0x_e52405604bF644349f57b36Ca6E85cf095faB8dA_](https://polygonscan.com/address/0xe52405604bf644349f57b36ca6e85cf095fab8da)
+* Görli: [0x_A0610921062f99D720710d9763EE8cb1fCF7a845_](https://goerli.etherscan.io/address/0xA0610921062f99D720710d9763EE8cb1fCF7a845)
+* Mumbai: [0x_a5e63d2d2DcA259270b6B8FeD95e0b420d929e58_](https://mumbai.polygonscan.com/address/0xa5e63d2d2DcA259270b6B8FeD95e0b420d929e58)
+
+{% embed url="https://github.com/PWNFinance/TokenBundler/tree/master" %}
+GitHub
+{% endembed %}
+
+{% file src="../../.gitbook/assets/TokenBundler.json" %}
+JSON ABI
+{% endfile %}
 
 ## 3. Contract Details
 
@@ -54,7 +56,7 @@ This function takes one argument:
 
 * `MultiToken.Asset[] memory`**`_assets`** - List of assets to include in a bundle
 
-See [MultiToken](multitoken.md) for more information about the argument type.
+See [MultiToken](../libraries/multitoken.md) for more information about the argument type.
 
 The function returns the ID of the created bundle.
 
@@ -137,7 +139,7 @@ function unwrap(uint256 _bundleId) override external {
 
 #### **Overview**
 
-Each token has its nonce. This function returns an Asset struct (see [MultiToken](multitoken.md#asset-struct)) for a provided token nonce.&#x20;
+Each token has its nonce. This function returns an Asset struct (see [MultiToken](../libraries/multitoken.md#asset-struct)) for a provided token nonce.&#x20;
 
 This function takes one argument:
 
@@ -181,7 +183,7 @@ function bundle(uint256 _bundleId) override external view returns (uint256[] mem
 
 #### Overview
 
-Returns an array of assets in a bundle. Each asset is represented as an Asset struct (see [MultiToken](multitoken.md#asset-struct)).
+Returns an array of assets in a bundle. Each asset is represented as an Asset struct (see [MultiToken](../libraries/multitoken.md#asset-struct)).
 
 This function takes one argument:
 
@@ -208,7 +210,7 @@ function tokensInBundle(uint256 _bundleId) override external view returns (Multi
 
 </details>
 
-## Events
+### Events
 
 The Token Bundler contract doesn't define any events or custom errors and inherits events from [**ITokenBundler**](https://github.com/PWNFinance/TokenBundler/blob/master/src/ITokenBundler.sol)**,** [**ERC1155**](https://eips.ethereum.org/EIPS/eip-1155)**, and** [**Ownable**](https://docs.openzeppelin.com/contracts/2.x/api/ownership#Ownable)**.** We will cover events inherited from the [ITokenBunder](https://github.com/PWNFinance/TokenBundler/blob/master/src/ITokenBundler.sol) interface. Please see the reference for [ERC1155](https://eips.ethereum.org/EIPS/eip-1155) and [Ownable](https://docs.openzeppelin.com/contracts/2.x/api/ownership#Ownable) for a complete overview.&#x20;
 

@@ -11,11 +11,11 @@ PWN is the **core interface that users are expected to use**. It is the only int
 ## 2. Important links
 
 * **Deployment addresses**
-  * Mainnet: [0x_0709b8e46e26b45d76CC5C744CAF5dE70a82578B_](https://etherscan.io/address/0x0709b8e46e26b45d76CC5C744CAF5dE70a82578B)__
-  * Polygon: [0x_BCdE56e9FB8c30aBB2D19Fb33D7DeD5031102da2_](https://polygonscan.com/address/0xBCdE56e9FB8c30aBB2D19Fb33D7DeD5031102da2)__
-  * Görli: [0x_d65404695a101B4FD476f4F2222F68917f96b911_](https://goerli.etherscan.io/address/0xd65404695a101B4FD476f4F2222F68917f96b911)__
-  * Mumbai: [0x_Da88e79E5Dd786AD3c29CeFbe6a2bece6f6c0477_](https://mumbai.polygonscan.com/address/0xDa88e79E5Dd786AD3c29CeFbe6a2bece6f6c0477)__
-  * Rinkeby (deprecated): [0x_34fCA53BbCbc2a4E2fF5D7F704b7143133dfaCF7_](https://rinkeby.etherscan.io/address/0x34fCA53BbCbc2a4E2fF5D7F704b7143133dfaCF7)__
+  * Mainnet: [0x_0709b8e46e26b45d76CC5C744CAF5dE70a82578B_](https://etherscan.io/address/0x0709b8e46e26b45d76CC5C744CAF5dE70a82578B)
+  * Polygon: [0x_BCdE56e9FB8c30aBB2D19Fb33D7DeD5031102da2_](https://polygonscan.com/address/0xBCdE56e9FB8c30aBB2D19Fb33D7DeD5031102da2)
+  * Görli: [0x_d65404695a101B4FD476f4F2222F68917f96b911_](https://goerli.etherscan.io/address/0xd65404695a101B4FD476f4F2222F68917f96b911)
+  * Mumbai: [0x_Da88e79E5Dd786AD3c29CeFbe6a2bece6f6c0477_](https://mumbai.polygonscan.com/address/0xDa88e79E5Dd786AD3c29CeFbe6a2bece6f6c0477)
+  * Rinkeby (deprecated): [0x_34fCA53BbCbc2a4E2fF5D7F704b7143133dfaCF7_](https://rinkeby.etherscan.io/address/0x34fCA53BbCbc2a4E2fF5D7F704b7143133dfaCF7)
 * **Source code**
   * [GitHub](https://github.com/PWNFinance/pwn\_contracts/blob/master/contracts/PWN.sol)
 * **ABI**
@@ -33,7 +33,7 @@ PWN is the **core interface that users are expected to use**. It is the only int
 * Claim collateral or credit
 * Revoke offers
 
-## Functions
+### Functions
 
 ### `createLoan`
 
@@ -41,7 +41,7 @@ A borrower can accept an existing signed off-chain offer by calling the `createL
 
 The diagram below shows the high-level logic of the function.
 
-&#x20;                                             ![](<../../.gitbook/assets/createLoan diagram.svg>)                                             &#x20;
+&#x20;                                             ![](<../../../.gitbook/assets/createLoan diagram.svg>)                                             &#x20;
 
 This function takes two arguments supplied by the caller (borrower):
 
@@ -84,7 +84,7 @@ This function assumes approval of all used assets to PWN Vault. If any of the us
 
 The diagram below shows the high-level logic of the function.
 
-&#x20;                                             ![](<../../.gitbook/assets/repayLoan diagram.svg>)                                             &#x20;
+&#x20;                                             ![](<../../../.gitbook/assets/repayLoan diagram.svg>)                                             &#x20;
 
 This function takes one argument supplied by the caller:
 
@@ -96,7 +96,7 @@ The owner of a LOAN token (usually the lender) can call this function to claim a
 
 The diagram below shows the high-level logic of the function.
 
-&#x20;                                             ![](../../.gitbook/assets/claimLoan.svg)                                             &#x20;
+&#x20;                                             ![](../../../.gitbook/assets/claimLoan.svg)                                             &#x20;
 
 This function takes one argument supplied by the caller:
 
@@ -111,6 +111,6 @@ This function takes two arguments supplied by the caller:
 * `bytes32`**`_offerHash`** - [EIP-712](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md) computed [hash](https://docs.ethers.io/v5/api/utils/hashing/#TypedDataEncoder-hash) of the [offer struct](offer-types.md)
 * `bytes calldata`**`_signature`** - [EIP-712](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md) [raw signature](https://docs.ethers.io/v5/api/signer/#Signer-signTypedData) of the [offer struct](offer-types.md)
 
-## Events
+### Events
 
 The PWN contract does not define any events or custom errors. All events relevant to the PWN protocol are emitted by the [PWN Vault](../pwn-vault.md) and [PWN LOAN](../pwn-loan.md) contracts.&#x20;

@@ -2,16 +2,16 @@
 
 ## 1. Summary
 
-PWN LOAN is a PWN contextual extension of a standard [ERC1155](https://eips.ethereum.org/EIPS/eip-1155) token. **Each LOAN is defined as an ERC1155 NFT**. The PWN LOAN contract allows for reading the contextual information of the loans (like status, expirations, etc.) but **all of its contract features can only be called through the** [**PWN**](pwn/) **contract.**
+PWN LOAN is a PWN contextual extension of a standard [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155) token. **Each LOAN is defined as an ERC-1155 NFT**. The PWN LOAN contract allows for reading the contextual information of the loans (like status, expirations, etc.) but **all of its contract features can only be called through the** [**PWN**](pwn/) **contract.**
 
 ## 2. Important links
 
 * **Deployment addresses**
-  * Mainnet: [0x_cFe385287200F0c10a54100e9b22855A73664156_](https://etherscan.io/address/0xcFe385287200F0c10a54100e9b22855A73664156)__
-  * Polygon: [0x_8680AEE63E48AACB51Ddc5Ad15979FC169C1cf2B_](https://polygonscan.com/address/0x8680AEE63E48AACB51Ddc5Ad15979FC169C1cf2B)__
-  * Görli: [0x_c9E94453d182c50984A2a4afdD60796D25B027Aa_](https://goerli.etherscan.io/address/0xc9E94453d182c50984A2a4afdD60796D25B027Aa)__
-  * Mumbai: [0x_7C995e64a24aCb5806521276697B244D1f65f708_](https://mumbai.polygonscan.com/address/0x7C995e64a24aCb5806521276697B244D1f65f708)__
-  * Rinkeby (deprecated): [0x_C33B746Ac85703178D5a796f960b5e855172e7F7_](https://rinkeby.etherscan.io/address/0xC33B746Ac85703178D5a796f960b5e855172e7F7)__
+  * Mainnet: [0x_cFe385287200F0c10a54100e9b22855A73664156_](https://etherscan.io/address/0xcFe385287200F0c10a54100e9b22855A73664156)
+  * Polygon: [0x_8680AEE63E48AACB51Ddc5Ad15979FC169C1cf2B_](https://polygonscan.com/address/0x8680AEE63E48AACB51Ddc5Ad15979FC169C1cf2B)
+  * Görli: [0x_c9E94453d182c50984A2a4afdD60796D25B027Aa_](https://goerli.etherscan.io/address/0xc9E94453d182c50984A2a4afdD60796D25B027Aa)
+  * Mumbai: [0x_7C995e64a24aCb5806521276697B244D1f65f708_](https://mumbai.polygonscan.com/address/0x7C995e64a24aCb5806521276697B244D1f65f708)
+  * Rinkeby (deprecated): [0x_C33B746Ac85703178D5a796f960b5e855172e7F7_](https://rinkeby.etherscan.io/address/0xC33B746Ac85703178D5a796f960b5e855172e7F7)
 * **Source code**
   * [GitHub](https://github.com/PWNFinance/pwn\_contracts/blob/master/contracts/PWNLOAN.sol)
 * **ABI**
@@ -33,7 +33,7 @@ The PWN LOAN token is a tokenized representation of a loan that can aquire diffe
 
 #### State diagram
 
-<figure><img src="../.gitbook/assets/image.png" alt=""><figcaption><p>LOAN token life cycle diagram</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption><p>LOAN token life cycle diagram</p></figcaption></figure>
 
 ### Loan token struct
 
@@ -41,19 +41,19 @@ Each LOAN token is defined by the LOAN token struct.&#x20;
 
 **`LOAN`** token struct has the following properties:
 
-| Type                                                                | Name              | Comment                                                                                                            |
-| ------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `uint8`                                                             | `status`          | see [LOAN token lifecycle](pwn-loan.md#loan-token-lifecycle)                                                       |
-| `address`                                                           | `borrower`        | Address of the borrower - stays the same for entire lifespan of the token                                          |
-| `uint32`                                                            | `duration`        | Loan duration in seconds                                                                                           |
-| `uint40`                                                            | `expiration`      | Unix timestamp (in seconds) setting up the default deadline                                                        |
-| `MultiToken.Asset` (see [Asset struct](multitoken.md#asset-struct)) | `collateral`      | Asset used as a loan collateral. Consisting of another `Asset` struct defined in the MultiToken library            |
-| `MultiToken.Asset` (see [Asset struct](multitoken.md#asset-struct)) | `asset`           | Asset to be borrowed by lender to borrower. Consisting of another `Asset` struct defined in the MultiToken library |
-| `uint256`                                                           | `loanRepayAmount` | Amount of LOAN asset to be repaid                                                                                  |
+| Type                                                                             | Name              | Comment                                                                                                            |
+| -------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `uint8`                                                                          | `status`          | see [LOAN token lifecycle](pwn-loan.md#loan-token-lifecycle)                                                       |
+| `address`                                                                        | `borrower`        | Address of the borrower - stays the same for entire lifespan of the token                                          |
+| `uint32`                                                                         | `duration`        | Loan duration in seconds                                                                                           |
+| `uint40`                                                                         | `expiration`      | Unix timestamp (in seconds) setting up the default deadline                                                        |
+| `MultiToken.Asset` (see [Asset struct](../libraries/multitoken.md#asset-struct)) | `collateral`      | Asset used as a loan collateral. Consisting of another `Asset` struct defined in the MultiToken library            |
+| `MultiToken.Asset` (see [Asset struct](../libraries/multitoken.md#asset-struct)) | `asset`           | Asset to be borrowed by lender to borrower. Consisting of another `Asset` struct defined in the MultiToken library |
+| `uint256`                                                                        | `loanRepayAmount` | Amount of LOAN asset to be repaid                                                                                  |
 
-## Functions
+### Functions
 
-This contract inherits from the ERC1155 token standard. This comes with all of the ERC1155 functionalities like transfers etc. Please read the [ERC1155](https://eips.ethereum.org/EIPS/eip-1155) specification for more details.&#x20;
+This contract inherits from the ERC-1155 token standard. This comes with all of the ERC-1155 functionalities like transfers etc. Please read the [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155) specification for more details.&#x20;
 
 ### View functions
 
@@ -93,7 +93,7 @@ This function takes one argument:
 
 #### `getCollateral`
 
-Returns collateral asset of a particular LOAN. By asset we mean Asset struct described in [MultiToken](multitoken.md).
+Returns collateral asset of a particular LOAN. By asset we mean Asset struct described in [MultiToken](../libraries/multitoken.md).
 
 This function takes one argument:
 
@@ -101,7 +101,7 @@ This function takes one argument:
 
 #### `getLoanAsset`
 
-Returns loan asset of particular LOAN. By asset we mean Asset struct described in [MultiToken](multitoken.md).
+Returns loan asset of particular LOAN. By asset we mean Asset struct described in [MultiToken](../libraries/multitoken.md).
 
 This function takes one argument:
 
@@ -123,11 +123,11 @@ This function takes one argument:
 
 * `bytes32`**`_offerHash`** - Hash of the offer struct
 
-## Events
+### Events
 
 PWNLOAN contract defines four events and no custom errors.&#x20;
 
-```
+```solidity
 event LOANCreated(uint256 indexed loanId, address indexed lender, bytes32 indexed offerHash);
 event OfferRevoked(bytes32 indexed offerHash);
 event PaidBack(uint256 loanId);

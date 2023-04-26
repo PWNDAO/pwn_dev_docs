@@ -14,8 +14,8 @@ Note that this feature can be used not only by [Externally Owned Accounts](https
 
 #### Simplified user flow with off-chain offers
 
-![](<../../.gitbook/assets/PWN\_contracts-Offchain offer user flow.drawio.png>)
+![](<../../../.gitbook/assets/PWN\_contracts-Offchain offer user flow.drawio (1).png>)
 
 #### Complete user flow with off-chain offers
 
-![](<../../.gitbook/assets/pwn-flow (1)-Flow v2.drawio.png>)
+![](<../../../.gitbook/assets/pwn-flow (1)-Flow v2.drawio.png>)
