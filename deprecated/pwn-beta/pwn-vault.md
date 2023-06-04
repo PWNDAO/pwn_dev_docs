@@ -44,7 +44,7 @@ The function assumes a prior token approval was made with the PWNVault address t
 
 This function takes two arguments:&#x20;
 
-* `MultiToken.Asset memory`**`_asset`** - An asset construct (see [MultiToken](../libraries/multitoken.md))
+* `MultiToken.Asset memory`**`_asset`** - An asset construct (see [MultiToken](../../smart-contracts/libraries/multitoken.md))
 * `address`**`_origin`** - Address from which asset is pulled into the Vault.&#x20;
 
 ### `push`
@@ -53,7 +53,7 @@ Function pushing an asset **from** the vault, sending to a defined recipient. Th
 
 This function takes two arguments:&#x20;
 
-* `MultiToken.Asset memory`**`_asset`** - An asset construct (see [MultiToken](../libraries/multitoken.md))
+* `MultiToken.Asset memory`**`_asset`** - An asset construct (see [MultiToken](../../smart-contracts/libraries/multitoken.md))
 * `address`**`_beneficiary`** - An address of the recipient of the asset -> is set in the PWN logic contract&#x20;
 
 ### `pushFrom`
@@ -66,7 +66,7 @@ This function assumes prior approval for the asset to be spent by the borrower's
 
 This function takes three arguments:
 
-* `MultiToken.Asset memory`**`_asset`** - An asset construct (see [MultiToken](../libraries/multitoken.md))
+* `MultiToken.Asset memory`**`_asset`** - An asset construct (see [MultiToken](../../smart-contracts/libraries/multitoken.md))
 * `address`**`_origin`** - An address of the lender who is providing the loan asset
 * `address`**`_beneficiary`** - An address of the recipient of the asset -> is set in the PWN logic contract
 
@@ -86,7 +86,7 @@ VaultPull event is emitted when the `pull` function is called.&#x20;
 
 This event has two parameters:
 
-* `MultiToken.Asset`**`asset`** - An asset construct (see [MultiToken](../libraries/multitoken.md))
+* `MultiToken.Asset`**`asset`** - An asset construct (see [MultiToken](../../smart-contracts/libraries/multitoken.md))
 * `address indexed`**`origin`** - Address from which asset is pulled into the Vault.&#x20;
 
 ### `VaultPush`
@@ -95,7 +95,7 @@ VaultPush event is emitted when the `push` function is called.&#x20;
 
 This event has two parameters:
 
-* `MultiToken.Asset`**`asset`** - An asset construct (see [MultiToken](../libraries/multitoken.md))
+* `MultiToken.Asset`**`asset`** - An asset construct (see [MultiToken](../../smart-contracts/libraries/multitoken.md))
 * `address indexed`**`beneficiary`** - Address to which is the asset pushed (transferred) to. &#x20;
 
 ### `VaultPushFrom`
@@ -104,6 +104,6 @@ VaultPushFrom event is emitted when the `pushFrom` function is called.&#x20;
 
 This event has three parameters:
 
-* `MultiToken.Asset`**`asset`** - An asset construct (see [MultiToken](../libraries/multitoken.md))
+* `MultiToken.Asset`**`asset`** - An asset construct (see [MultiToken](../../smart-contracts/libraries/multitoken.md))
 * `address indexed`**`origin`** - An address of the lender who is providing the loan asset
 * `address indexed`**`beneficiary`** - An address of the recipient of the asset -> is set in the PWN logic contract

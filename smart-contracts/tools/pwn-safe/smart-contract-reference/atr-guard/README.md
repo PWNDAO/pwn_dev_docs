@@ -6,11 +6,6 @@ Asset Transfer Rights Guard is responsible for enforcing asset transfer rules. I
 
 ## 2. Important links
 
-* Mainnet (proxy): [0xc390f85B5286DBA62C4f1AEC3f451b4267d594DA](https://etherscan.io/address/0xc390f85B5286DBA62C4f1AEC3f451b4267d594DA)
-* Polygon (proxy): [0xc390f85B5286DBA62C4f1AEC3f451b4267d594DA](https://polygonscan.com/address/0xc390f85B5286DBA62C4f1AEC3f451b4267d594DA)
-* Görli (proxy): [0xc390f85B5286DBA62C4f1AEC3f451b4267d594DA](https://goerli.etherscan.io/address/0xc390f85B5286DBA62C4f1AEC3f451b4267d594DA)
-* Mumbai (proxy): [0xc390f85B5286DBA62C4f1AEC3f451b4267d594DA](https://mumbai.polygonscan.com/address/0xc390f85B5286DBA62C4f1AEC3f451b4267d594DA)
-
 {% embed url="https://github.com/PWNFinance/pwn_safe/blob/main/src/guard/AssetTransferRightsGuard.sol" %}
 GitHub
 {% endembed %}

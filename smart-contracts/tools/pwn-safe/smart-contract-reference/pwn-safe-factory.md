@@ -6,11 +6,6 @@ PWN Safe Factory is used to deploy new PWN Safes and keep track of all deployed 
 
 ## 2. Important links
 
-* Mainnet: [0x408F179dBB365D6601083fb8fF01ff0E1C66AE28](https://etherscan.io/address/0x408F179dBB365D6601083fb8fF01ff0E1C66AE28)
-* Polygon: [0x408F179dBB365D6601083fb8fF01ff0E1C66AE28](https://polygonscan.com/address/0x408F179dBB365D6601083fb8fF01ff0E1C66AE28)
-* Görli: [0x408F179dBB365D6601083fb8fF01ff0E1C66AE28](https://goerli.etherscan.io/address/0x408F179dBB365D6601083fb8fF01ff0E1C66AE28)
-* Mumbai: [0x408F179dBB365D6601083fb8fF01ff0E1C66AE28](https://mumbai.polygonscan.com/address/0x408F179dBB365D6601083fb8fF01ff0E1C66AE28#code)
-
 {% embed url="https://github.com/PWNFinance/pwn_safe/blob/main/src/factory/PWNSafeFactory.sol" %}
 GitHub
 {% endembed %}

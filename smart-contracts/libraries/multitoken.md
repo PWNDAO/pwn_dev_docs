@@ -394,12 +394,7 @@ function isSameAs(Asset memory asset, Asset memory otherAsset) internal pure ret
 
 Each asset is defined by the **`Asset`** struct and has the following properties:
 
-| Type                                            | Name           | Comment                                          |
-| ----------------------------------------------- | -------------- | ------------------------------------------------ |
-| [`MultiToken.Category`](#user-content-fn-1)[^1] | `category`     | Corresponding asset category                     |
-| `address`                                       | `assetAddress` | Address of the token contract defining the asset |
-| `uint256`                                       | `id`           | TokenID of an NFT or 0                           |
-| `uint256`                                       | `amount`       | Amount of fungible tokens or 0 -> 1              |
+<table><thead><tr><th width="273.09421454876235">Type</th><th width="164.45656287647148">Name</th><th>Comment</th></tr></thead><tbody><tr><td><a data-footnote-ref href="#user-content-fn-1"><code>MultiToken.Category</code></a></td><td><code>category</code></td><td>Corresponding asset category</td></tr><tr><td><code>address</code></td><td><code>assetAddress</code></td><td>Address of the token contract defining the asset</td></tr><tr><td><code>uint256</code></td><td><code>id</code></td><td>TokenID of an NFT or 0</td></tr><tr><td><code>uint256</code></td><td><code>amount</code></td><td>Amount of fungible tokens or 0 -> 1</td></tr></tbody></table>
 
 ### Events
 

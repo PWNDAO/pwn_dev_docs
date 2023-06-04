@@ -6,11 +6,6 @@ This contract represents the tokenised asset transfer rights as an [ERC-721](htt
 
 ## 2. Important links
 
-* Mainnet: [0xb20a1745692e8312bd4a2A0092b887526e547F9D](https://etherscan.io/address/0xb20a1745692e8312bd4a2A0092b887526e547F9D)
-* Polygon: [0xb20a1745692e8312bd4a2A0092b887526e547F9D](https://polygonscan.com/address/0xb20a1745692e8312bd4a2A0092b887526e547F9D)
-* Görli: [0xb20a1745692e8312bd4a2A0092b887526e547F9D](https://goerli.etherscan.io/address/0xb20a1745692e8312bd4a2A0092b887526e547F9D)
-* Mumbai: [0xb20a1745692e8312bd4a2A0092b887526e547F9D](https://mumbai.polygonscan.com/address/0xb20a1745692e8312bd4a2A0092b887526e547F9D)
-
 {% embed url="https://github.com/PWNFinance/pwn_safe/blob/main/src/module/AssetTransferRights.sol" %}
 GitHub
 {% endembed %}

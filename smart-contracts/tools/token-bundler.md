@@ -6,11 +6,6 @@ The contract enables **bundling ERC20, ERC721, and/or ERC1155 tokens into a sing
 
 ## 2. Important links
 
-* Mainnet: [0x_19e3293196aee99BB3080f28B9D3b4ea7F232b8d_](https://etherscan.io/address/0x19e3293196aee99BB3080f28B9D3b4ea7F232b8d)
-* Polygon: [0x_e52405604bF644349f57b36Ca6E85cf095faB8dA_](https://polygonscan.com/address/0xe52405604bf644349f57b36ca6e85cf095fab8da)
-* Görli: [0x_A0610921062f99D720710d9763EE8cb1fCF7a845_](https://goerli.etherscan.io/address/0xA0610921062f99D720710d9763EE8cb1fCF7a845)
-* Mumbai: [0x_a5e63d2d2DcA259270b6B8FeD95e0b420d929e58_](https://mumbai.polygonscan.com/address/0xa5e63d2d2DcA259270b6B8FeD95e0b420d929e58)
-
 {% embed url="https://github.com/PWNFinance/TokenBundler/tree/master" %}
 GitHub
 {% endembed %}

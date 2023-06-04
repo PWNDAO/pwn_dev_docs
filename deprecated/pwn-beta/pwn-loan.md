@@ -41,15 +41,7 @@ Each LOAN token is defined by the LOAN token struct.&#x20;
 
 **`LOAN`** token struct has the following properties:
 
-| Type                                                                             | Name              | Comment                                                                                                            |
-| -------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `uint8`                                                                          | `status`          | see [LOAN token lifecycle](pwn-loan.md#loan-token-lifecycle)                                                       |
-| `address`                                                                        | `borrower`        | Address of the borrower - stays the same for entire lifespan of the token                                          |
-| `uint32`                                                                         | `duration`        | Loan duration in seconds                                                                                           |
-| `uint40`                                                                         | `expiration`      | Unix timestamp (in seconds) setting up the default deadline                                                        |
-| `MultiToken.Asset` (see [Asset struct](../libraries/multitoken.md#asset-struct)) | `collateral`      | Asset used as a loan collateral. Consisting of another `Asset` struct defined in the MultiToken library            |
-| `MultiToken.Asset` (see [Asset struct](../libraries/multitoken.md#asset-struct)) | `asset`           | Asset to be borrowed by lender to borrower. Consisting of another `Asset` struct defined in the MultiToken library |
-| `uint256`                                                                        | `loanRepayAmount` | Amount of LOAN asset to be repaid                                                                                  |
+<table><thead><tr><th width="150">Type</th><th width="150">Name</th><th>Comment</th></tr></thead><tbody><tr><td><code>uint8</code></td><td><code>status</code></td><td>see <a href="pwn-loan.md#loan-token-lifecycle">LOAN token lifecycle</a></td></tr><tr><td><code>address</code></td><td><code>borrower</code></td><td>Address of the borrower - stays the same for entire lifespan of the token</td></tr><tr><td><code>uint32</code></td><td><code>duration</code></td><td>Loan duration in seconds</td></tr><tr><td><code>uint40</code></td><td><code>expiration</code></td><td>Unix timestamp (in seconds) setting up the default deadline</td></tr><tr><td><code>MultiToken.Asset</code> (see <a href="../../smart-contracts/libraries/multitoken.md#asset-struct">Asset struct</a>)</td><td><code>collateral</code></td><td>Asset used as a loan collateral. Consisting of another <code>Asset</code> struct defined in the MultiToken library</td></tr><tr><td><code>MultiToken.Asset</code> (see <a href="../../smart-contracts/libraries/multitoken.md#asset-struct">Asset struct</a>)</td><td><code>asset</code></td><td>Asset to be borrowed by lender to borrower. Consisting of another <code>Asset</code> struct defined in the MultiToken library</td></tr><tr><td><code>uint256</code></td><td><code>loanRepayAmount</code></td><td>Amount of LOAN asset to be repaid</td></tr></tbody></table>
 
 ### Functions
 
@@ -93,7 +85,7 @@ This function takes one argument:
 
 #### `getCollateral`
 
-Returns collateral asset of a particular LOAN. By asset we mean Asset struct described in [MultiToken](../libraries/multitoken.md).
+Returns collateral asset of a particular LOAN. By asset we mean Asset struct described in [MultiToken](../../smart-contracts/libraries/multitoken.md).
 
 This function takes one argument:
 
@@ -101,7 +93,7 @@ This function takes one argument:
 
 #### `getLoanAsset`
 
-Returns loan asset of particular LOAN. By asset we mean Asset struct described in [MultiToken](../libraries/multitoken.md).
+Returns loan asset of particular LOAN. By asset we mean Asset struct described in [MultiToken](../../smart-contracts/libraries/multitoken.md).
 
 This function takes one argument:
 

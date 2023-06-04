@@ -6,11 +6,6 @@ This contract is used by the ATR Module and is responsible for managing a whitel
 
 ## 2. Important links
 
-* Mainnet: [0x79EC459C3bA4c64f00353caBF5fa179e059e2e1e](https://etherscan.io/address/0x79EC459C3bA4c64f00353caBF5fa179e059e2e1e)
-* Polygon: [0x79EC459C3bA4c64f00353caBF5fa179e059e2e1e](https://polygonscan.com/address/0x79EC459C3bA4c64f00353caBF5fa179e059e2e1e)
-* Görli: [0x79EC459C3bA4c64f00353caBF5fa179e059e2e1e](https://goerli.etherscan.io/address/0x79EC459C3bA4c64f00353caBF5fa179e059e2e1e)
-* Mumbai: [0x79EC459C3bA4c64f00353caBF5fa179e059e2e1e](https://mumbai.polygonscan.com/address/0x79EC459C3bA4c64f00353caBF5fa179e059e2e1e)
-
 {% embed url="https://github.com/PWNFinance/pwn_safe/blob/main/src/Whitelist.sol" %}
 GitHub
 {% endembed %}
