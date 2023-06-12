@@ -54,7 +54,8 @@
 * [PWN Docs](https://docs.pwn.xyz/)
 * [FAQ](https://faq.pwn.xyz/)
 * [Audits](more-documentation/audits/README.md)
-  * [PWN Protocol Audit](https://audit.pwn.xyz/)
+  * [PWN V1 Audit](https://linktr.ee/pwn.audits)
+  * [PWN Beta Audit](https://audit.pwn.xyz/)
 
 ## Deprecated
 
