@@ -72,11 +72,15 @@ To understand the security profile of the PWN Protocol we need to know what enti
 
 <figure><img src="../../.gitbook/assets/Ownership diagram.png" alt=""><figcaption></figcaption></figure>
 
-{% hint style="info" %}
+{% hint style="success" %}
 We haven’t covered the PWN Deployer contract in this article for simplicity's sake. PWN Deployer’s only purpose is to deploy contracts on different chains with the same address.
 {% endhint %}
 
-As you can see there are two entities. The **PWNDAO** and the **Protocol Team**. The contracts enforce that these two are separate entities (addresses). Both of these entities also have a time lock for their operations. The protocol team has a delay of 14 days and the product team (PWN DAO) has 7 days.&#x20;
+As you can see there are two entities. The **PWNDAO** and the **Protocol Team**. The contracts enforce that these two are separate entities (addresses). Both of these entities also have a time lock for their operations. The protocol team and the product team (PWN DAO) have a delay of 4 days. At the moment both of these entities are 2-of-4 multi-signature wallets.
+
+{% hint style="info" %}
+Both the time lock delay and the minimal signatures threshold on the multisigs are expected to increase as the protocol matures.&#x20;
+{% endhint %}
 
 ### PWN Config
 

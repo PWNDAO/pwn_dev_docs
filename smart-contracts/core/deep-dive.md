@@ -158,13 +158,17 @@ There’re two `revokeNonce` functions with a different function signature. One 
 
 Throughout this article, we’ve mentioned two owners that manage some contracts in the PWN Protocol. Let’s look at these entities in detail. Keep in mind that although these accounts have a lot of power they still cannot alter already existing loans. Even if both of these entities are malicious, your already existing loan is safe!&#x20;
 
-Both of these entities also have a time lock for their operations. The Protocol Team has a delay of 14 days and the Product Team (PWN DAO) has 7 days.&#x20;
+There are two entities. The **PWNDAO** and the **Protocol Team**. The contracts enforce that these two are separate entities (addresses). Both of these entities also have a time lock for their operations. The protocol team and the product team (PWN DAO) have a delay of 4 days. At the moment both of these entities are 2-of-4 multi-signature wallets.
+
+{% hint style="info" %}
+Both the time lock delay and the minimal signatures threshold on the multisigs are expected to increase as the protocol matures.&#x20;
+{% endhint %}
 
 #### Protocol Team
 
 The Protocol Team is responsible for managing and upgrading the protocol smart contracts. At the time of writing, there is no plan to hand over this role to the community as there’re no serious security risks associated with this role being centralized.
 
-#### Product team / PWNDAO
+#### Product Team / PWNDAO
 
 The product team is responsible for updating the parameters of the protocol (e.g. updating the fee). At the time of the launch of the PWN Protocol V1, this is a Safe Multisig account owned by the PWN team. As we progress to become more decentralized this role will be taken over by the PWN DAO.
 
