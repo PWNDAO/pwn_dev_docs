@@ -6,7 +6,7 @@ PWNDeployer.sol contract manages deployments of the PWN Protocol contracts. It u
 
 ## 2. Important links
 
-{% embed url="https://github.com/PWNFinance/pwn_contracts/blob/master/src/deployer/PWNDeployer.sol" %}
+{% embed url="https://github.com/PWNFinance/pwn_deployer/blob/main/src/PWNDeployer.sol" %}
 GitHub
 {% endembed %}
 
