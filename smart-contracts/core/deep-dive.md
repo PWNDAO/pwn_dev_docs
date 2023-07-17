@@ -1,6 +1,6 @@
 # Deep Dive
 
-Welcome to our deep-dive article on PWN Protocol. This article provides a comprehensive understanding of the PWN Protocol architecture and properties. With each section, we will build up the PWN Protocol architecture diagram and finally end up with the full picture.
+Welcome to our deep-dive article on the PWN Protocol. This article provides a comprehensive understanding of the PWN Protocol architecture and properties. With each section, we will build upon the PWN Protocol architecture diagram and finally end up with the full picture.
 
 {% hint style="success" %}
 This article assumes you’re familiar with EVM, Solidity, and PWN. If you're not we suggest visiting the [ethereum.org](http://ethereum.org) website and reading our [Introduction to the PWN Protocol](introduction.md).
@@ -90,7 +90,7 @@ Simple Loans can be extended by the lender by more than 30 days but not in one t
 
 ## Offers and loan request types
 
-A LOAN contract we’ve just covered has one feature we’ve not mentioned yet. It can accept more offer and loan request types!&#x20;
+The LOAN contract we’ve just covered has one important feature we haven't mentioned yet. It can accept more offers and loan request types!&#x20;
 
 {% hint style="info" %}
 For example, the Simple Loan type can accept offers made on entire collections. That means the user can make an offer on the entire BAYC collection and the borrowers don’t have to wait for someone to make an offer on their specific Ape and can instead accept the so-called Collection Offer.
@@ -114,7 +114,7 @@ The [PWNLOAN.sol](smart-contract-reference/pwn-loan.md) is an [ERC-721](https://
 
 ### ERC-5646
 
-EIP-5646 provides a standardized interface that allows for the unambiguous identification of the state of a mutable token without requiring any knowledge of the token's implementation details. The EIP specification defines the `getStateFingerprint` function, which returns a unique value that must change when the token's state changes, and includes all state properties that may change during its lifecycle, excluding immutable properties. By providing this minimum interface, protocols can support mutable tokens without the need for specific implementation knowledge, enabling greater interoperability and reducing the bottleneck effect that arises from requiring explicit support for every new token.
+ERC-5646 provides a standardized interface that allows for the unambiguous identification of the state of a mutable token without requiring any knowledge of the token's implementation details. The EIP specification defines the `getStateFingerprint` function, which returns a unique value that must change when the token's state changes, and includes all state properties that may change during its lifecycle, excluding immutable properties. By providing this minimum interface, protocols can support mutable tokens without the need for specific implementation knowledge, enabling greater interoperability and reducing the bottleneck effect that arises from requiring explicit support for every new token.
 
 <figure><img src="../../.gitbook/assets/Ownership diagram - 4.png" alt=""><figcaption></figcaption></figure>
 
