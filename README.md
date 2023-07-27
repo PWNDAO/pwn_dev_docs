@@ -4,7 +4,7 @@ description: Welcome to the PWN developer documentation.
 
 # Welcome!
 
-PWN protocol is a decentralized and permissionless set of smart contracts. With the PWN protocol you can **unlock the full potential of your assets** such as in-game collectibles, art or ERC-20 tokens - all of that without the risk of liquidation and with fixed interest. In this developer documentation, you can learn about the Core contracts, protocol architecture, libraries and tools we've developed.
+PWN protocol is a trustless and permissionless set of smart contracts. With the PWN protocol you can **unlock the full potential of your assets** such as in-game collectibles, art or ERC-20 tokens - all of that without the risk of liquidation and with fixed interest. In this developer documentation, you can learn about the Core contracts, protocol architecture, libraries and tools we've developed.
 
 ## Documentation structure
 
