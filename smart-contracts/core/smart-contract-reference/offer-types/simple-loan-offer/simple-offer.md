@@ -158,7 +158,7 @@ function encodeLoanTermsFactoryData(Offer memory offer) external pure returns (b
 
 <details>
 
-<summary><code>getRequestHash</code></summary>
+<summary><code>getOfferHash</code></summary>
 
 #### Overview
 

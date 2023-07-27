@@ -175,7 +175,7 @@ function encodeLoanTermsFactoryData(Offer memory offer, OfferValues memory offer
 
 <details>
 
-<summary><code>getRequestHash</code></summary>
+<summary><code>getOfferHash</code></summary>
 
 #### Overview
 
