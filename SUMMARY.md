@@ -55,7 +55,7 @@
 * [FAQ](https://faq.pwn.xyz/)
 * [Audits](more-documentation/audits/README.md)
   * [PWN V1 Audit](https://linktr.ee/pwn.audits)
-  * [PWN Beta Audit](https://audit.pwn.xyz/)
+  * [PWN Beta Audit](https://drive.google.com/file/d/1GijXMvSV5JA2PEymtOZlBAGAIzS1oftz)
 
 ## Deprecated
 
