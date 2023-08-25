@@ -6,6 +6,7 @@
 * [Polygon](https://polygon.technology/polygon-pos)
 * [Cronos](https://cronos.org/)
 * [Base](https://base.org/)
+* [Mantle](https://www.mantle.xyz/)
 * [Goerli](https://goerli.net/)
 
 [PWN Safe](tools/pwn-safe/) smart contracts are deployed on the following networks:&#x20;
