@@ -56,6 +56,7 @@
 * [Audits](more-documentation/audits/README.md)
   * [PWN V1 Audits](https://linktr.ee/pwn.audits)
   * [PWN Beta Audit](https://drive.google.com/file/d/1GijXMvSV5JA2PEymtOZlBAGAIzS1oftz)
+* [Using PWN without front-end](more-documentation/using-pwn-without-front-end.md)
 
 ## Deprecated
 
