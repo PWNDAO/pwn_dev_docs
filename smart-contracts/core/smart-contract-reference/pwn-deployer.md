@@ -10,10 +10,6 @@ PWNDeployer.sol contract manages deployments of the PWN Protocol contracts. It u
 GitHub
 {% endembed %}
 
-{% embed url="https://github.com/PWNFinance/pwn_contracts/blob/master/src/deployer/PWNContractDeployerSalt.sol" %}
-Salts used in CREATE2 calls
-{% endembed %}
-
 ## 3. Contract details
 
 * _PWNDeployer.sol_ is written in Solidity version 0.8.16
