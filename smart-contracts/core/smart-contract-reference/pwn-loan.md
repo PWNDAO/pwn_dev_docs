@@ -139,7 +139,7 @@ function getStateFingerprint(uint256 tokenId) external view virtual override ret
 
 ### Events
 
-The PWN Safe Factory contract defines one event and no custom errors.
+The PWNLOAN contract defines one event and no custom errors.
 
 ```solidity
 event LOANMinted(uint256 indexed loanId, address indexed loanContract, address indexed owner);
