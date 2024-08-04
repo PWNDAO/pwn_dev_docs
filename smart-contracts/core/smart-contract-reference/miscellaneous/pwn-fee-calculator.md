@@ -32,12 +32,7 @@ function calculateFeeAmount(uint16 fee, uint256 loanAmount) internal pure return
     if (fee == 0)
         return (0, loanAmount);
 
-    unchecked {
-        if ((loanAmount * fee) / fee == loanAmount)
-            feeAmount = loanAmount * uint256(fee) / 1e4;
-        else
-            feeAmount = loanAmount / 1e4 * uint256(fee);
-    }
+    feeAmount = Math.mulDiv(loanAmount, fee, 1e4);
     newLoanAmount = loanAmount - feeAmount;
 }
 ```

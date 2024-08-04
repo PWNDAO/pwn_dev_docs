@@ -7,12 +7,8 @@ The PWNLOAN.sol contract is an [ERC-721](https://eips.ethereum.org/EIPS/eip-721)
 ## 2. Important links
 
 {% embed url="https://github.com/PWNFinance/pwn_contracts/blob/master/src/loan/token/PWNLOAN.sol" %}
-GitHub
-{% endembed %}
 
-{% file src="../../../.gitbook/assets/PWNLOAN.json" %}
-JSON ABI
-{% endfile %}
+{% file src="../../../.gitbook/assets/PWNLOAN (1).json" %}
 
 ## 3. Contract details
 
@@ -24,7 +20,6 @@ JSON ABI
 
 ### Inherited contracts, implemented Interfaces and ERCs
 
-* [PWNHubAccessControl](pwn-hub/access-control.md)
 * [IERC5646](https://eips.ethereum.org/EIPS/eip-5646)
 * [ERC721](https://eips.ethereum.org/EIPS/eip-721)
 
@@ -139,7 +134,7 @@ function getStateFingerprint(uint256 tokenId) external view virtual override ret
 
 ### Events
 
-The PWNLOAN contract defines one event and no custom errors.
+The PWNLOAN contract defines two events and two errors.
 
 ```solidity
 event LOANMinted(uint256 indexed loanId, address indexed loanContract, address indexed owner);
@@ -169,5 +164,34 @@ LOANBurned event is emitted when a LOAN token is burned.
 This event has one parameter:
 
 * `uint256 indexed`**`loanId`** - ID of the burned LOAN token
+
+</details>
+
+### Errors
+
+```solidity
+error InvalidLoanContractCaller();
+error CallerMissingHubTag(bytes32 tag);
+```
+
+<details>
+
+<summary><code>InvalidLoanContractCaller</code></summary>
+
+A InvalidLoanContractCaller error is thrown when [burn](pwn-loan.md#burn) function caller is not a loan contract that minted the LOAN token.
+
+This error doesn't have any parameters.
+
+</details>
+
+<details>
+
+<summary><code>CallerMissingHubTag</code></summary>
+
+A CallerMissingHubTag error is thrown when caller is missing a [PWN Hub](pwn-hub/) tag.
+
+This error has one parameter:
+
+* `bytes32`**`tag`**
 
 </details>

@@ -35,17 +35,14 @@ bytes32 internal constant ACTIVE_LOAN = keccak256("PWN_ACTIVE_LOAN");
 
 Tags can be changed by the owner (we will talk about ownership aspects later) through the `setTag` function. There’s also the `setTags` function that changes multiple tags in one call. The `hasTag` view function returns a boolean value given a contract `address` and a `bytes32` tag.
 
-Other contracts in the protocol inherit the [PWNHubAccessControl.sol](smart-contract-reference/pwn-hub/access-control.md). This contract defines two modifiers:
-
-1. `onlyActiveLoan` - checks if the caller has an "ACTIVE\_LOAN" tag in the hub contract, otherwise, it reverts with the [CallerMissingHubTag](smart-contract-reference/miscellaneous/pwn-errors.md) error.
-2. `onlyWithTag` - checks if the caller has a specific tag in the PWN Hub contract, otherwise it reverts. The tag is passed as an argument to the modifier.
+Contracts in the PWN protocol checks if the caller has the appropriate tag assigned in the PWN Hug and reverts if not.
 
 ### Ownership
 
-The Protocol Team owns this contract and is therefore responsible for adding new contracts to the protocol and deprecating old contracts.
+The PWNDAO owns this contract and is therefore responsible for adding new contracts to the protocol and deprecating old contracts.
 
 {% hint style="info" %}
-Even if the Protocol Team was a malicious entity it could only pause the creation of new loans. Already running loans would be unaffected and all assets would still be safe.
+Even if the PWNDAO was a malicious entity it could only pause the creation of new loans. Existing loans would be unaffected and all assets would still be safe.
 {% endhint %}
 
 ## Config
@@ -56,6 +53,8 @@ The [PWNConfig.sol](smart-contract-reference/pwn-config.md) contract stores the 
 
 * Fee size
 * Fee collector address
+* Registered pool adapters
+* Registered state fingerprint computers
 * Metadata URI
 
 To prevent any attacks there is a hard cap of 10 % on the fee size.
@@ -66,51 +65,53 @@ The PWN Config contract is meant to be used behind a proxy contract. This enable
 
 ### Ownership
 
-There are two entities affecting this contract. One owner is the owner of PWNConfig. The other is the owner of the proxy and for the sake of clarity, we will call this entity admin. The admin (Protocol Team) is able to add and remove parameters of the protocol by upgrading the PWNConfig through the proxy. The owner (PWNDAO) is able to change the parameters of the protocol. These two cannot be the same entities to prevent otherwise possible attacks.
+The PWNDAO is both the owner and the admin of the PWN Config. As the owner, it can update any stored property, and as the admin, it can upgrade the proxy contract. Both of these actions are delayed by respective timelocks.
 
 <figure><img src="../../.gitbook/assets/Ownership diagram - 1.png" alt=""><figcaption></figcaption></figure>
 
-## The LOAN (Vault)
+## The Loan (Vault)
 
-The LOAN contracts are the primary contracts doing business logic. Given a loan request and an offer (we will talk about these in more detail later), the contract creates a loan. There can be an unlimited number of these contracts, we call them loan types. The LOAN contracts can implement any logic, for example, simple loans or mortgage-type loans. Each loan type has to be added to the PWN Hub by the Protocol Team.
+The Loan contracts are the primary contracts doing business logic. Given a proposal (we will talk about them in more detail later), the contract creates a loan. There can be an unlimited number of these contracts, we call them loan types. The Loan contracts can implement any logic, for example, simple loans or perpetual loans. Each loan type has to be added to the PWN Hub by the PWNDAO.
+
+### Source of funds
+
+When creating a new loan, the lender can choose a source of funds. The default is that the funds are owned by the lender's account and transferred directly to a borrower. However, the lender has another option and can use a pool to withdraw the funds at the time of loan creation first. It is done via pool adapters that handle the withdrawal to the lender account, after which the flow is the same as in the case of a direct source of funds. This allows the lender to create proposals without actually owning the credit asset and withdraw them only if accepted, accruing the interest from the pool in the meantime. The pool adapters are registered in the PWN Config and only PWNDAO is able to update them.
+
+{% hint style="info" %}
+Currently PWN supports Compound V3 and Aave V3 as a source of funds. The number of pools will extended in the future.&#x20;
+{% endhint %}
 
 ### PWNVault
 
-The LOAN contracts inherit the [PWNVault.sol](smart-contract-reference/pwn-vault.md) contract. The Vault is used for transferring and managing collateral and loan assets. The Vault contains three transfer functions, `_pull`, `_push`, and `_pushFrom`. The `_pull` function pulls an asset into the Vault from the borrower address, assuming a prior token approval was made to the LOAN (Vault) address. The `_pull` function is typically used to transfer the collateral from a borrower to the Vault. The `_push` function pushes an asset from the Vault to a defined recipient, such as a borrower or a lender. The `_push` function is typically used to transfer the collateral back to a borrower when a loan is repaid. The `_pushFrom` function pushes an asset from one address to another, assuming a prior token approval was made to the Vault address. The `_pushFrom` function is typically used to transfer borrowed tokens from a lender to a borrower.
+The LOAN contracts inherit the [PWNVault.sol](smart-contract-reference/pwn-vault/) contract. The Vault is used for transferring and managing collateral and credit assets. The Vault contains five transfer functions, `_pull`, `_push`, `_pushFrom`, `_withdrawFromPool`, and `_supplyToPool`. The `_pull` function pulls an asset into the Vault from an account, assuming a prior token approval was made to the Loan (Vault) address. The `_pull` function is typically used to transfer collateral or repayment from a borrower to the Vault. The `_push` function pushes an asset from the Vault to a defined recipient, such as a borrower or a lender. The `_push` function is typically used to transfer the collateral back to a borrower when a loan is repaid or repayment to a lender when a loan defaults. The `_pushFrom` function pushes an asset from one account to another, assuming a prior token approval was made to the Loan (Vault) address. The `_pushFrom` function is typically used to transfer borrowed tokens from a lender to a borrower. The `_withdrawFromPool` function withdraws funds from a pool via a registered pool adapter in the PWN Config. The `_withdrawFromPool` function is used when a lender picks a source of funds that is different than lenders account. The `_supplyToPool` function supplies funds to a pool via a registered pool adapter in the PWN Config. The `_supplyToPool` function is used when the original loan lender is the same as current LOAN owner and the original source of funds is a pool.&#x20;
 
 ### SimpleLoan
 
-The first loan type in the PWN Protocol is the Simple Loan. In this loan, a borrower provides collateral and the lender lends ERC-20 tokens to the borrower. The borrower must repay an agreed amount of the borrowed tokens before the loan matures. If the borrower does not repay the loan the lender can claim the collateral. There is also an option for the lender to extend the maturity date of a running loan by up to 30 days.
+The first loan type in the PWN Protocol is the Simple Loan. In this loan, a borrower provides collateral and the lender lends ERC-20 tokens to the borrower. The borrower must repay an agreed amount of the borrowed tokens before the loan matures. If the borrower does not repay the loan the lender can claim the collateral. There is also an option for the lender to extend the maturity date of a running loan by up to 90 days.
+
+<figure><img src="../../.gitbook/assets/Ownership diagram (1).png" alt=""><figcaption></figcaption></figure>
+
+## Proposal types
+
+The Loan contract we’ve just covered has one important feature we haven't mentioned yet. It can accept more proposal types!&#x20;
 
 {% hint style="info" %}
-Simple Loans can be extended by the lender by more than 30 days but not in one transaction and only by 30 days from the transaction block inclusion. This is a security measure to help protect lenders.&#x20;
+For example, the Simple Loan type can accept proposals made on entire collections. That means the user can make a proposal on the entire BAYC collection and the borrowers don’t have to wait for someone to make a proposal on their specific Ape and can instead accept the so-called Collection Proposal.
 {% endhint %}
 
-<figure><img src="../../.gitbook/assets/Ownership diagram - 2.png" alt=""><figcaption></figcaption></figure>
-
-## Offers and loan request types
-
-The LOAN contract we’ve just covered has one important feature we haven't mentioned yet. It can accept more offers and loan request types!&#x20;
+Each proposal type implements one function called `acceptProposal` which performs checks if proposal can be accepted and returns a loan terms for the loan type. All proposals in the PWN Protocol are signed typed structs according to the [EIP-712](https://eips.ethereum.org/EIPS/eip-712).&#x20;
 
 {% hint style="info" %}
-For example, the Simple Loan type can accept offers made on entire collections. That means the user can make an offer on the entire BAYC collection and the borrowers don’t have to wait for someone to make an offer on their specific Ape and can instead accept the so-called Collection Offer.
+Keep in mind that although proposals can be created on-chain users will typically create and sign proposals off-chain to save unnecessary gas fees.
 {% endhint %}
 
-### LoanTermsFactory
-
-Each offer and loan request type implements the [LoanTermsFactory](smart-contract-reference/loan-types/simple-loan/simple-loan-terms-factory.md) contract for a given loan type (e.g. Simple Loan). This contract defines only one function called `createLOANTerms` and as the name suggests it creates loan terms for a given offer and loan request. All offers and loan requests in the PWN Protocol are signed typed structs according to the [EIP-712](https://eips.ethereum.org/EIPS/eip-712).&#x20;
-
-{% hint style="info" %}
-Keep in mind that although offer and loan requests can be created on-chain users will typically create and sign offers and loan requests off-chain to save unnecessary gas fees.
-{% endhint %}
-
-<figure><img src="../../.gitbook/assets/Ownership diagram - 3.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Ownership diagram (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 ## LOAN token
 
 ### Functionality
 
-The [PWNLOAN.sol](smart-contract-reference/pwn-loan.md) is an [ERC-721](https://eips.ethereum.org/EIPS/eip-721) token contract. Each token represents a unique loan in the PWN Protocol. Only the LOAN (Vault) contracts are allowed to mint or burn these tokens. There’s also a `tokenURI` function that returns the metadata URI for a given LOAN token ID and a mapping of LOAN token IDs to contract addresses that minted them. Furthermore, this contract implements the [ERC-165](https://eips.ethereum.org/EIPS/eip-165) and [ERC-5646](https://eips.ethereum.org/EIPS/eip-5646) standards.
+The [PWNLOAN.sol](smart-contract-reference/pwn-loan.md) is an [ERC-721](https://eips.ethereum.org/EIPS/eip-721) token contract. Each token represents a unique loan in the PWN Protocol. Only the Loan (Vault) contracts are allowed to mint or burn these tokens. There’s also a `tokenURI` function that returns the metadata URI for a given LOAN token ID and a mapping of LOAN token IDs to contract addresses that minted them. Furthermore, this contract implements the [ERC-165](https://eips.ethereum.org/EIPS/eip-165) and [ERC-5646](https://eips.ethereum.org/EIPS/eip-5646) standards.
 
 ### ERC-5646
 
@@ -122,25 +123,29 @@ ERC-5646 provides a standardized interface that allows for the unambiguous ident
 
 ### Usage
 
-Each offer (or loan request) struct has a nonce value, represented as a `uint256`. Once an offer (or loan request) is used to create a loan, its nonce is considered revoked, and any other offers (or loan requests) with the same nonce will be invalid, This allows a lender to make multiple offers, but only one of them can be accepted while the rest are automatically revoked.
+Each proposal struct has a nonce and a nonce space value, represented as a `uint256`.&#x20;
+
+The nonce value is necessary to check if the proposal is valid (one of the validity conditions) and to distinguish otherwise identical proposals. Because proposals can be signed off-chain and cannot be unsigned (as the signature exists), we cannot just delete the proposal if the proposer decides to invalidate it. The nonce needs to be revoked via an on-chain transaction. If a nonce is revoked, a proposal acceptance transaction will revert. It is the same as giving somebody a signed check and going to a bank before they can cash it in. Proposal nonces are typically revoked during the acceptance. Users can use it to create group proposals with the same nonce, where accepting one proposal invalidates the rest in the group.
 
 {% hint style="info" %}
-An exception to this rule is so-called persistent offers that stay valid even after being used to start a loan.
+An exception to this rule is so-called persistent proposals that stay valid even after being used to start a loan.
 {% endhint %}
+
+Then there is nonce space. Any proposal with a nonce space value different than the signer's current nonce space is considered invalid. The nonce space value is strictly incremental (unlike nonce, which can be random) and is used to invalidate all signed proposals in one transaction. Signing a proposal with a higher nonce space than the current value (for the signed) is not recommended. It will be invalid until the nonce space increases, leading to unexpected behavior.
 
 ### Revoking a nonce
 
-If an account wants to manually revoke an offer (loan request) it can do so with the `revokeNonce` function passing the nonce as an argument. This function is implemented by the [PWNRevokedNonce.sol](smart-contract-reference/pwn-revoked-nonce.md), Loan Request and Offer contracts.&#x20;
+If an account wants to revoke a proposal manually it can do so with the `revokeNonce` function passing the nonce as an argument. This function is implemented by the [PWNRevokedNonce.sol](smart-contract-reference/pwn-revoked-nonce.md).&#x20;
 
 {% hint style="info" %}
-There’re two `revokeNonce` functions with a different function signature. One takes only the nonce as an argument and the other also takes an address. The latter enables to revoke nonces for other accounts, but it’s only callable by account with a tag in the Hub.&#x20;
+There are several `revokeNonce` functions with different function signatures. One can be called by anyone and uses the caller's address as the nonce owner. Others take an owner address as an argument, but they’re only callable by an account with a tag in the Hub.
 {% endhint %}
 
 ## Miscellaneous
 
 ### Errors
 
-[PWNErrors.sol](smart-contract-reference/miscellaneous/pwn-errors.md) defines all custom errors in the PWN Protocol.
+[PWNErrors.sol](smart-contract-reference/miscellaneous/pwn-errors.md) defines general custom errors in the PWN Protocol. Errors specific to proposals and other contracts are defined in their corresponding contracts.
 
 ### FeeCalculator
 
@@ -152,27 +157,9 @@ There’re two `revokeNonce` functions with a different function signature. One 
 
 ### Deployer
 
-[PWNDeployer.sol](smart-contract-reference/pwn-deployer.md) deploys other PWN protocol contracts with the CREATE2 opcode. This enables having the same contract addresses on all EVM-compatible blockchains.
+[PWNDeployer.sol](../tools/pwn-deployer.md) deploys other PWN protocol contracts with the CREATE2 opcode. This enables having the same contract addresses on all EVM-compatible blockchains.
 
-### Owners
-
-Throughout this article, we’ve mentioned two owners that manage some contracts in the PWN Protocol. Let’s look at these entities in detail. Keep in mind that although these accounts have a lot of power they still cannot alter already existing loans. Even if both of these entities are malicious, your already existing loan is safe!&#x20;
-
-There are two entities. The **PWNDAO** and the **Protocol Team**. The contracts enforce that these two are separate entities (addresses). Both of these entities also have a time lock for their operations. The protocol team and the product team (PWN DAO) have a delay of 4 days. At the moment both of these entities are 2-of-4 multi-signature wallets.
-
-{% hint style="info" %}
-Both the time lock delay and the minimal signatures threshold on the multisigs are expected to increase as the protocol matures.&#x20;
-{% endhint %}
-
-#### Protocol Team
-
-The Protocol Team is responsible for managing and upgrading the protocol smart contracts. At the time of writing, there is no plan to hand over this role to the community as there’re no serious security risks associated with this role being centralized.
-
-#### Product Team / PWNDAO
-
-The product team is responsible for updating the parameters of the protocol (e.g. updating the fee). At the time of the launch of the PWN Protocol V1, this is a Safe Multisig account owned by the PWN team. As we progress to become more decentralized this role will be taken over by the PWN DAO.
-
-<figure><img src="../../.gitbook/assets/Ownership diagram - 5.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Ownership diagram (2).png" alt=""><figcaption></figcaption></figure>
 
 ## What now?
 

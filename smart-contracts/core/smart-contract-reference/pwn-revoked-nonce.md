@@ -2,19 +2,13 @@
 
 ## 1. Summary
 
-PWNRevokedNonce.sol contract is used for revoking offers and loan requests. Each offer or loan request has a unique nonce value which can be revoked. It is also possible to set a minimal nonce value to revoke all nonces up to a set value. One PWNRevokedNonce contract corresponds with one offer or loan type.
+PWNRevokedNonce.sol contract is used for revoking proposals. Each proposal has a unique nonce value which can be revoked. Every address has its own nonce space.
 
 ## 2. Important links
 
 {% embed url="https://github.com/PWNFinance/pwn_contracts/blob/master/src/nonce/PWNRevokedNonce.sol" %}
-GitHub
-{% endembed %}
 
-{% file src="../../../.gitbook/assets/PWNRevokedNonce.json" %}
-JSON ABI
-{% endfile %}
-
-
+{% file src="../../../.gitbook/assets/PWNRevokedNonce (1).json" %}
 
 ## 3. Contract details
 
@@ -22,9 +16,8 @@ JSON ABI
 
 ### Features
 
-* Revoke nonce
+* Revoke nonces and nonce spaces
 * Revoke nonce on behalf of the owner
-* Set a minimal nonce value
 
 ### Functions
 
@@ -34,7 +27,7 @@ JSON ABI
 
 #### Overview
 
-Revokes supplied nonce for `msg.sender`.
+Revokes supplied nonce in the current nonce space for `msg.sender`.
 
 This function takes one argument supplied by the caller:
 
@@ -44,7 +37,30 @@ This function takes one argument supplied by the caller:
 
 ```solidity
 function revokeNonce(uint256 nonce) external {
-    _revokeNonce(msg.sender, nonce);
+    _revokeNonce(msg.sender, _nonceSpace[msg.sender], nonce);
+}
+```
+
+</details>
+
+<details>
+
+<summary><code>revokeNonce(uint256 nonceSpace, uint256 nonce)</code></summary>
+
+#### Overview
+
+Revokes supplied nonce in the supplied nonce space for `msg.sender`.&#x20;
+
+This function takes two arguments supplied by the caller:
+
+* `uint256`**`nonceSpace`**
+* `uint256`**`nonce`**
+
+#### Implementation
+
+```solidity
+function revokeNonce(uint256 nonceSpace, uint256 nonce) external {
+    _revokeNonce(msg.sender, nonceSpace, nonce);
 }
 ```
 
@@ -56,7 +72,7 @@ function revokeNonce(uint256 nonce) external {
 
 #### Overview
 
-Revokes supplied nonce on behalf of the owner. This function can be called only by addresses with the `accessTag` set in the [PWN Hub](pwn-hub/).
+Revokes supplied nonce on behalf of the owner in the current nonce space. This function can be called only by addresses with the `accessTag` set in the [PWN Hub](pwn-hub/).
 
 This function takes two arguments supplied by the caller:
 
@@ -66,8 +82,8 @@ This function takes two arguments supplied by the caller:
 #### Implementation
 
 ```solidity
-function revokeNonce(address owner, uint256 nonce) external onlyWithTag(accessTag) {
-    _revokeNonce(owner, nonce);
+function revokeNonce(address owner, uint256 nonce) external onlyWithHubTag {
+    _revokeNonce(owner, _nonceSpace[owner], nonce);
 }
 ```
 
@@ -75,30 +91,44 @@ function revokeNonce(address owner, uint256 nonce) external onlyWithTag(accessTa
 
 <details>
 
-<summary><code>setMinNonce</code></summary>
+<summary><code>revokeNonce(address owner, uint256 nonceSpace, uint256 nonce)</code></summary>
 
 #### Overview
 
-Sets a minimal nonce for `msg.sender`, thus revoking all nonces with a smaller nonce.
+Revokes supplied nonce in the supplied nonce space on behalf of the owner. This function can be called only by addresses with the `accessTag` set in the [PWN Hub](pwn-hub/).
 
-This function takes one argument supplied by the caller:
+This function takes two arguments supplied by the caller:
 
-* `uint256`**`minNonce`**
+* `address`**`owner`**
+* `uint256`**`nonceSpace`**
+* `uint256`**`nonce`**
 
 #### Implementation
 
 ```solidity
-function setMinNonce(uint256 minNonce) external {
-    // Check that nonce is greater than current min nonce
-    uint256 currentMinNonce = minNonces[msg.sender];
-    if (currentMinNonce >= minNonce)
-        revert InvalidMinNonce();
+function revokeNonce(address owner, uint256 nonceSpace, uint256 nonce) external onlyWithHubTag {
+    _revokeNonce(owner, nonceSpace, nonce);
+}
+```
 
-    // Set new min nonce value
-    minNonces[msg.sender] = minNonce;
+</details>
 
-    // Emit event
-    emit MinNonceSet(msg.sender, minNonce);
+<details>
+
+<summary><code>revokeNonceSpace</code></summary>
+
+#### Overview
+
+Revokes all nonces in the current nonce space and increments the nonce space for `msg.sender`.
+
+This function doesn't take any arguments.
+
+#### Implementation
+
+```solidity
+function revokeNonceSpace() external returns (uint256) {
+    emit NonceSpaceRevoked(msg.sender, _nonceSpace[msg.sender]);
+    return ++_nonceSpace[msg.sender];
 }
 ```
 
@@ -112,21 +142,68 @@ function setMinNonce(uint256 minNonce) external {
 
 #### Overview
 
-This function returns a boolean determining if the supplied nonce is valid for a given address.
+This function returns a boolean determining if the supplied nonce is revoked for a given address in supplied nonce space.
 
-This function takes two arguments supplied by the caller:
+This function takes three arguments supplied by the caller:
 
-* `address`**`owner`** - The address to check
-* `uint256`**`nonce`** - The nonce to check
+* `address`**`owner`**
+* `uint256`**`nonceSpace`**
+* `uint256`**`nonce`**
 
 #### Implementation
 
 ```solidity
-function isNonceRevoked(address owner, uint256 nonce) external view returns (bool) {
-    if (nonce < minNonces[owner])
-        return true;
+function isNonceRevoked(address owner, uint256 nonceSpace, uint256 nonce) external view returns (bool) {
+    return _revokedNonce[owner][nonceSpace][nonce];
+}
+```
 
-    return revokedNonces[owner][nonce];
+</details>
+
+<details>
+
+<summary><code>isNonceUsable</code></summary>
+
+#### Overview
+
+This function returns a boolean determining if the supplied nonce is usable for a given address in supplied nonce space.
+
+This function takes three arguments supplied by the caller:
+
+* `address`**`owner`**
+* `uint256`**`nonceSpace`**
+* `uint256`**`nonce`**
+
+#### Implementation
+
+```solidity
+function isNonceUsable(address owner, uint256 nonceSpace, uint256 nonce) external view returns (bool) {
+    if (_nonceSpace[owner] != nonceSpace)
+        return false;
+
+    return !_revokedNonce[owner][nonceSpace][nonce];
+}
+```
+
+</details>
+
+<details>
+
+<summary><code>currentNonceSpace</code></summary>
+
+#### Overview
+
+This function returns current nonce space for an address.
+
+This function takes one argument supplied by the caller:
+
+* `address`**`owner`**
+
+#### Implementation
+
+```solidity
+function currentNonceSpace(address owner) external view returns (uint256) {
+    return _nonceSpace[owner];
 }
 ```
 
@@ -134,11 +211,11 @@ function isNonceRevoked(address owner, uint256 nonce) external view returns (boo
 
 ### Events
 
-The PWN Revoked Nonce contract defines two events and no custom errors.
+The PWN Revoked Nonce contract defines two events and two errors.
 
 ```solidity
-event NonceRevoked(address indexed owner, uint256 indexed nonce);
-event MinNonceSet(address indexed owner, uint256 indexed minNonce);
+event NonceRevoked(address indexed owner, uint256 indexed nonceSpace, uint256 indexed nonce);
+event NonceSpaceRevoked(address indexed owner, uint256 indexed nonceSpace);
 ```
 
 <details>
@@ -147,22 +224,58 @@ event MinNonceSet(address indexed owner, uint256 indexed minNonce);
 
 A NonceRevoked event is emitted when a nonce is revoked.&#x20;
 
-This event has two parameters:
+This event has three parameters:
 
 * `address indexed`**`owner`**
+* `uint256 indexed`**`nonceSpace`**
 * `uint256 indexed`**`nonce`**
 
 </details>
 
 <details>
 
-<summary><code>MinNonceSet</code></summary>
+<summary><code>NonceSpaceRevoked</code></summary>
 
-A MinNonceSet event is emitted when a minimal nonce value is set.&#x20;
+A NonceSpaceRevoked event is emitted when a nonce space is revoked.
 
 This event has two parameters:
 
 * `address indexed`**`owner`**
-* `uint256 indexed`**`minNonce`**
+* `uint256 indexed`**`nonceSpace`**
+
+</details>
+
+### Errors
+
+```solidity
+error NonceAlreadyRevoked(address addr, uint256 nonceSpace, uint256 nonce);
+error NonceNotUsable(address addr, uint256 nonceSpace, uint256 nonce);
+```
+
+<details>
+
+<summary><code>NonceAlreadyRevoked</code></summary>
+
+A NonceAlreadyRevoked error is thrown when trying to revoke a nonce that is already revoked.
+
+This error has three parameters:
+
+* `address`**`addr`**
+* `uint256`**`nonceSpace`**
+* `uint256`**`nonce`**
+
+</details>
+
+<details>
+
+<summary><code>NonceNotUsable</code></summary>
+
+A NonceNotUsable error is thrown when trying to use a nonce that is revoked or not in the current nonce space.
+
+This error has three parameters:
+
+* `address`**`addr`**
+* `uint256`**`nonceSpace`**
+* `uint256`**`nonce`**
 
 </details>

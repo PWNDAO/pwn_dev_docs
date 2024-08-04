@@ -7,12 +7,8 @@ The PWNHub.sol contract stores tags for each contract in the protocol and theref
 ## 2. Important links
 
 {% embed url="https://github.com/PWNFinance/pwn_contracts/blob/master/src/hub/PWNHub.sol" %}
-GitHub
-{% endembed %}
 
-{% file src="../../../../.gitbook/assets/PWNHub.json" %}
-JSON ABI
-{% endfile %}
+{% file src="../../../../.gitbook/assets/PWNHub (1).json" %}
 
 ## 3. Contract details
 

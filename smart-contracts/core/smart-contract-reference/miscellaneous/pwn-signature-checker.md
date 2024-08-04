@@ -7,8 +7,6 @@ The PWNSignatureChecker library implements the `isValidSignatureNow` view functi
 ## 2. Important links
 
 {% embed url="https://github.com/PWNFinance/pwn_contracts/blob/master/src/loan/lib/PWNSignatureChecker.sol" %}
-GitHub
-{% endembed %}
 
 ## 3. Contract details
 
@@ -72,12 +70,44 @@ function isValidSignatureNow(
             s = vs & bytes32(0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
             v = uint8((uint256(vs) >> 255) + 27);
         } else {
-            revert InvalidSignatureLength(signature.length);
+            revert InvalidSignatureLength({ length: signature.length });
         }
 
         return signer == ECDSA.recover(hash, v, r, s);
     }
 }
 ```
+
+</details>
+
+### Errors
+
+```solidity
+error InvalidSignatureLength(uint256 length);
+error InvalidSignature(address signer, bytes32 digest);
+```
+
+<details>
+
+<summary><code>InvalidSignatureLength</code></summary>
+
+InvalidSignatureLength event is emitted when signature length is not 64 nor 65 bytes.
+
+This event has one parameter:
+
+* `uint256`**`length`**
+
+</details>
+
+<details>
+
+<summary><code>InvalidSignature</code></summary>
+
+InvalidSignatureLength event is emitted when the signature is invalid.
+
+This event has one parameter:
+
+* `address`**`signer`**
+* `bytes32`**`digest`** - hash to distinguish different proposals
 
 </details>
