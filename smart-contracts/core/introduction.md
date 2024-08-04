@@ -20,7 +20,7 @@ This article assumes you’re familiar with the fundamentals of Ethereum, DeFi, 
 
 The PWN Protocol has been designed to be expanded on with new features, while keeping the immutability properties, as demonstrated in the diagram below. In this part, we will dive into the technical aspects of this design.
 
-<figure><img src="../../.gitbook/assets/Diagram V1 simple.png" alt=""><figcaption><p>Simplified Architecture of the PWN Protocol</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Diagram V1 simple (1).png" alt=""><figcaption><p>Simplified Architecture of the PWN Protocol</p></figcaption></figure>
 
 ### The PWN Config and Hub Contracts
 
@@ -50,7 +50,7 @@ As you can see in the diagram below, the main Loan contract in each loan type ac
 One type of loan is called a Simple Loan. In this type of loan, a borrower provides collateral and receives tokens from a lender. The borrower has two options: they can repay the agreed amount and retrieve their collateral, or they can choose to default on the loan. Once the repayment is made or the default occurs, the lender has the right to claim the repaid tokens or the collateral.
 {% endhint %}
 
-<figure><img src="../../.gitbook/assets/Loan type.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Loan type (1).png" alt=""><figcaption></figcaption></figure>
 
 ## How do users interact with the protocol?
 
