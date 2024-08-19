@@ -71,7 +71,9 @@ Let’s look at the security properties of the PWN Protocol and see what are the
 
 To understand the security profile of the PWN Protocol we need to know what entities own the smart contracts. Look at the following diagram:
 
-<figure><img src="../../.gitbook/assets/Ownership diagram.png" alt=""><figcaption></figcaption></figure>
+
+
+<figure><img src="../../.gitbook/assets/Ownership diagram (3).png" alt=""><figcaption></figcaption></figure>
 
 {% hint style="success" %}
 We haven’t covered the PWN Deployer contract in this article for simplicity's sake. PWN Deployer’s only purpose is to deploy contracts on different chains with the same address.

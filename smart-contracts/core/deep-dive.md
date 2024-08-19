@@ -8,12 +8,12 @@ This article assumes you’re familiar with EVM, Solidity, and PWN. If you're no
 
 Here’s an overview of the topics covered in this article:
 
-* [Hub](deep-dive.md#hub) - What contracts are part of the protocol?
-* [Config](deep-dive.md#config) - Definition of protocol parameters
-* [The LOAN (Vault)](deep-dive.md#the-loan-vault) - Business logic
-* [Offers and loan request types](deep-dive.md#offers-and-loan-request-types)
+* [Hub](deep-dive.md#hub) - Valid contracts in the PWN Protocol
+* [Config](deep-dive.md#config) - Configurable parameters
+* [The LOAN (Vault)](deep-dive.md#the-loan-vault) - Escrow contract
+* [Proposal types](deep-dive.md#proposal-types) - Loan business logic
 * [LOAN token](deep-dive.md#loan-token) - Tokenised debt
-* [Nonces](deep-dive.md#nonces) - Identify unique offers and loan requests
+* [Nonces](deep-dive.md#nonces) - Identify unique proposals
 * [Miscellaneous](deep-dive.md#miscellaneous)
 * [What now?](deep-dive.md#what-now)
 
@@ -67,7 +67,9 @@ The PWN Config contract is meant to be used behind a proxy contract. This enable
 
 The PWNDAO is both the owner and the admin of the PWN Config. As the owner, it can update any stored property, and as the admin, it can upgrade the proxy contract. Both of these actions are delayed by respective timelocks.
 
-<figure><img src="../../.gitbook/assets/Ownership diagram - 1.png" alt=""><figcaption></figcaption></figure>
+
+
+<figure><img src="../../.gitbook/assets/Group 55.png" alt=""><figcaption></figcaption></figure>
 
 ## The Loan (Vault)
 
@@ -83,13 +85,13 @@ Currently PWN supports Compound V3 and Aave V3 as a source of funds. The number 
 
 ### PWNVault
 
-The LOAN contracts inherit the [PWNVault.sol](smart-contract-reference/pwn-vault/) contract. The Vault is used for transferring and managing collateral and credit assets. The Vault contains five transfer functions, `_pull`, `_push`, `_pushFrom`, `_withdrawFromPool`, and `_supplyToPool`. The `_pull` function pulls an asset into the Vault from an account, assuming a prior token approval was made to the Loan (Vault) address. The `_pull` function is typically used to transfer collateral or repayment from a borrower to the Vault. The `_push` function pushes an asset from the Vault to a defined recipient, such as a borrower or a lender. The `_push` function is typically used to transfer the collateral back to a borrower when a loan is repaid or repayment to a lender when a loan defaults. The `_pushFrom` function pushes an asset from one account to another, assuming a prior token approval was made to the Loan (Vault) address. The `_pushFrom` function is typically used to transfer borrowed tokens from a lender to a borrower. The `_withdrawFromPool` function withdraws funds from a pool via a registered pool adapter in the PWN Config. The `_withdrawFromPool` function is used when a lender picks a source of funds that is different than lenders account. The `_supplyToPool` function supplies funds to a pool via a registered pool adapter in the PWN Config. The `_supplyToPool` function is used when the original loan lender is the same as current LOAN owner and the original source of funds is a pool.&#x20;
+The Loan contracts inherit the [PWNVault.sol](smart-contract-reference/pwn-vault/) contract. The Vault is used for transferring and managing collateral and credit assets. The Vault contains five transfer functions, `_pull`, `_push`, `_pushFrom`, `_withdrawFromPool`, and `_supplyToPool`. The `_pull` function pulls an asset into the Vault from an account, assuming a prior token approval was made to the Loan (Vault) address. The `_pull` function is typically used to transfer collateral or repayment from a borrower to the Vault. The `_push` function pushes an asset from the Vault to a defined recipient, such as a borrower or a lender. The `_push` function is typically used to transfer the collateral back to a borrower when a loan is repaid or repayment to a lender when a loan defaults. The `_pushFrom` function pushes an asset from one account to another, assuming a prior token approval was made to the Loan (Vault) address. The `_pushFrom` function is typically used to transfer borrowed tokens from a lender to a borrower. The `_withdrawFromPool` function withdraws funds from a pool via a registered pool adapter in the PWN Config. The `_withdrawFromPool` function is used when a lender picks a source of funds that is different than lenders account. The `_supplyToPool` function supplies funds to a pool via a registered pool adapter in the PWN Config. The `_supplyToPool` function is used when the original loan lender is the same as current LOAN owner and the original source of funds is a pool.&#x20;
 
 ### SimpleLoan
 
 The first loan type in the PWN Protocol is the Simple Loan. In this loan, a borrower provides collateral and the lender lends ERC-20 tokens to the borrower. The borrower must repay an agreed amount of the borrowed tokens before the loan matures. If the borrower does not repay the loan the lender can claim the collateral. There is also an option for the lender to extend the maturity date of a running loan by up to 90 days.
 
-<figure><img src="../../.gitbook/assets/Ownership diagram (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Group 54.png" alt=""><figcaption></figcaption></figure>
 
 ## Proposal types
 
@@ -105,7 +107,7 @@ Each proposal type implements one function called `acceptProposal` which perform
 Keep in mind that although proposals can be created on-chain users will typically create and sign proposals off-chain to save unnecessary gas fees.
 {% endhint %}
 
-<figure><img src="../../.gitbook/assets/Ownership diagram (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Group 53.png" alt=""><figcaption></figcaption></figure>
 
 ## LOAN token
 
@@ -117,7 +119,7 @@ The [PWNLOAN.sol](smart-contract-reference/pwn-loan.md) is an [ERC-721](https://
 
 ERC-5646 provides a standardized interface that allows for the unambiguous identification of the state of a mutable token without requiring any knowledge of the token's implementation details. The EIP specification defines the `getStateFingerprint` function, which returns a unique value that must change when the token's state changes, and includes all state properties that may change during its lifecycle, excluding immutable properties. By providing this minimum interface, protocols can support mutable tokens without the need for specific implementation knowledge, enabling greater interoperability and reducing the bottleneck effect that arises from requiring explicit support for every new token.
 
-<figure><img src="../../.gitbook/assets/Ownership diagram - 4.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Group 52.png" alt=""><figcaption></figcaption></figure>
 
 ## Nonces
 
@@ -159,7 +161,7 @@ There are several `revokeNonce` functions with different function signatures. On
 
 [PWNDeployer.sol](../tools/pwn-deployer.md) deploys other PWN protocol contracts with the CREATE2 opcode. This enables having the same contract addresses on all EVM-compatible blockchains.
 
-<figure><img src="../../.gitbook/assets/Ownership diagram (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Full diagram.png" alt=""><figcaption></figcaption></figure>
 
 ## What now?
 
