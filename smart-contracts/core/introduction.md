@@ -79,10 +79,10 @@ To understand the security profile of the PWN Protocol we need to know what enti
 We haven’t covered the PWN Deployer contract in this article for simplicity's sake. PWN Deployer’s only purpose is to deploy contracts on different chains with the same address.
 {% endhint %}
 
-As you can see, the **PWNDAO** owns two timelocks: protocol and admin. The protocol timelock owns PWN Config, PWN Hub, and the Multi Token Category Registry. The admin timelock manages PWN Config, which is the only upgradeable contract in the PWN protocol. Both timelocks have a delay of 4 days. PWNDAO is the only address that can propose or cancel operations on the timelocks.
+As you can see, the **PWNDAO** owns two timelocks: protocol and admin. The protocol timelock owns PWN Config, PWN Hub, and the Multi Token Category Registry. The admin timelock manages PWN Config, which is the only upgradeable contract in the PWN protocol. Both timelocks currently have a delay of 0 days. PWNDAO is the only address that can propose or cancel operations on the timelocks.
 
 {% hint style="info" %}
-The time lock delay is expected to increase as the protocol matures.&#x20;
+The time lock delay is expected to increase as the protocol matures and PWNDAO is launched.
 {% endhint %}
 
 ### PWN Config

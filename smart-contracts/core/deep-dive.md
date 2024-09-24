@@ -67,8 +67,6 @@ The PWN Config contract is meant to be used behind a proxy contract. This enable
 
 The PWNDAO is both the owner and the admin of the PWN Config. As the owner, it can update any stored property, and as the admin, it can upgrade the proxy contract. Both of these actions are delayed by respective timelocks.
 
-
-
 <figure><img src="../../.gitbook/assets/Group 55.png" alt=""><figcaption></figcaption></figure>
 
 ## The Loan (Vault)
@@ -160,6 +158,14 @@ There are several `revokeNonce` functions with different function signatures. On
 ### Deployer
 
 [PWNDeployer.sol](../tools/pwn-deployer.md) deploys other PWN protocol contracts with the CREATE2 opcode. This enables having the same contract addresses on all EVM-compatible blockchains.
+
+### Timelocks
+
+PWNDAO owns two timelocks: protocol and admin. The protocol timelock owns PWN Config, PWN Hub, and the Multi Token Category Registry. The admin timelock manages PWN Config, which is the only upgradeable contract in the PWN protocol. Both timelocks currently have a delay of 0 days. PWNDAO is the only address that can propose or cancel operations on the timelocks.
+
+{% hint style="info" %}
+The time lock delay is expected to increase as the protocol matures and PWNDAO is launched.
+{% endhint %}
 
 <figure><img src="../../.gitbook/assets/Full diagram.png" alt=""><figcaption></figcaption></figure>
 
