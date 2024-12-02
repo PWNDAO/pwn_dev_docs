@@ -11,13 +11,13 @@ PWN is the **core interface that users are expected to use**. It is the only int
 ## 2. Important links
 
 * **Deployment addresses**
-  * Mainnet: [0x_0709b8e46e26b45d76CC5C744CAF5dE70a82578B_](https://etherscan.io/address/0x0709b8e46e26b45d76CC5C744CAF5dE70a82578B)
-  * Polygon: [0x_BCdE56e9FB8c30aBB2D19Fb33D7DeD5031102da2_](https://polygonscan.com/address/0xBCdE56e9FB8c30aBB2D19Fb33D7DeD5031102da2)
-  * Görli: [0x_d65404695a101B4FD476f4F2222F68917f96b911_](https://goerli.etherscan.io/address/0xd65404695a101B4FD476f4F2222F68917f96b911)
-  * Mumbai: [0x_Da88e79E5Dd786AD3c29CeFbe6a2bece6f6c0477_](https://mumbai.polygonscan.com/address/0xDa88e79E5Dd786AD3c29CeFbe6a2bece6f6c0477)
-  * Rinkeby (deprecated): [0x_34fCA53BbCbc2a4E2fF5D7F704b7143133dfaCF7_](https://rinkeby.etherscan.io/address/0x34fCA53BbCbc2a4E2fF5D7F704b7143133dfaCF7)
+  * Mainnet: [0&#x78;_&#x30;709b8e46e26b45d76CC5C744CAF5dE70a82578B_](https://etherscan.io/address/0x0709b8e46e26b45d76CC5C744CAF5dE70a82578B)
+  * Polygon: [0&#x78;_&#x42;CdE56e9FB8c30aBB2D19Fb33D7DeD5031102da2_](https://polygonscan.com/address/0xBCdE56e9FB8c30aBB2D19Fb33D7DeD5031102da2)
+  * Görli: [0&#x78;_&#x64;65404695a101B4FD476f4F2222F68917f96b911_](https://goerli.etherscan.io/address/0xd65404695a101B4FD476f4F2222F68917f96b911)
+  * Mumbai: [0&#x78;_&#x44;a88e79E5Dd786AD3c29CeFbe6a2bece6f6c0477_](https://mumbai.polygonscan.com/address/0xDa88e79E5Dd786AD3c29CeFbe6a2bece6f6c0477)
+  * Rinkeby (deprecated): [0&#x78;_&#x33;4fCA53BbCbc2a4E2fF5D7F704b7143133dfaCF7_](https://rinkeby.etherscan.io/address/0x34fCA53BbCbc2a4E2fF5D7F704b7143133dfaCF7)
 * **Source code**
-  * [GitHub](https://github.com/PWNFinance/pwn\_contracts/blob/master/contracts/PWN.sol)
+  * [GitHub](https://github.com/PWNFinance/pwn_contracts/blob/master/contracts/PWN.sol)
 * **ABI**
   * [JSON](https://api.etherscan.io/api?module=contract\&action=getabi\&address=0x0709b8e46e26b45d76CC5C744CAF5dE70a82578B)
   * [Text](http://api.etherscan.io/api?module=contract\&action=getabi\&address=0x0709b8e46e26b45d76CC5C744CAF5dE70a82578B\&format=raw)

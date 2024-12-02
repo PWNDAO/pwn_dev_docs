@@ -7,13 +7,13 @@ PWN LOAN is a PWN contextual extension of a standard [ERC-1155](https://eips.eth
 ## 2. Important links
 
 * **Deployment addresses**
-  * Mainnet: [0x_cFe385287200F0c10a54100e9b22855A73664156_](https://etherscan.io/address/0xcFe385287200F0c10a54100e9b22855A73664156)
-  * Polygon: [0x_8680AEE63E48AACB51Ddc5Ad15979FC169C1cf2B_](https://polygonscan.com/address/0x8680AEE63E48AACB51Ddc5Ad15979FC169C1cf2B)
-  * Görli: [0x_c9E94453d182c50984A2a4afdD60796D25B027Aa_](https://goerli.etherscan.io/address/0xc9E94453d182c50984A2a4afdD60796D25B027Aa)
-  * Mumbai: [0x_7C995e64a24aCb5806521276697B244D1f65f708_](https://mumbai.polygonscan.com/address/0x7C995e64a24aCb5806521276697B244D1f65f708)
-  * Rinkeby (deprecated): [0x_C33B746Ac85703178D5a796f960b5e855172e7F7_](https://rinkeby.etherscan.io/address/0xC33B746Ac85703178D5a796f960b5e855172e7F7)
+  * Mainnet: [0&#x78;_&#x63;Fe385287200F0c10a54100e9b22855A73664156_](https://etherscan.io/address/0xcFe385287200F0c10a54100e9b22855A73664156)
+  * Polygon: [0&#x78;_&#x38;680AEE63E48AACB51Ddc5Ad15979FC169C1cf2B_](https://polygonscan.com/address/0x8680AEE63E48AACB51Ddc5Ad15979FC169C1cf2B)
+  * Görli: [0&#x78;_&#x63;9E94453d182c50984A2a4afdD60796D25B027Aa_](https://goerli.etherscan.io/address/0xc9E94453d182c50984A2a4afdD60796D25B027Aa)
+  * Mumbai: [0&#x78;_&#x37;C995e64a24aCb5806521276697B244D1f65f708_](https://mumbai.polygonscan.com/address/0x7C995e64a24aCb5806521276697B244D1f65f708)
+  * Rinkeby (deprecated): [0&#x78;_&#x43;33B746Ac85703178D5a796f960b5e855172e7F7_](https://rinkeby.etherscan.io/address/0xC33B746Ac85703178D5a796f960b5e855172e7F7)
 * **Source code**
-  * [GitHub](https://github.com/PWNFinance/pwn\_contracts/blob/master/contracts/PWNLOAN.sol)
+  * [GitHub](https://github.com/PWNFinance/pwn_contracts/blob/master/contracts/PWNLOAN.sol)
 * **ABI**
   * [JSON](https://api.etherscan.io/api?module=contract\&action=getabi\&address=0xcFe385287200F0c10a54100e9b22855A73664156)
   * [Text](http://api.etherscan.io/api?module=contract\&action=getabi\&address=0xcFe385287200F0c10a54100e9b22855A73664156\&format=raw)

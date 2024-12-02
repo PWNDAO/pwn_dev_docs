@@ -15,13 +15,13 @@ All approval of tokens utilized within the PWN context has to be done towards th
 ## 2. Important links
 
 * **Deployment addresses**
-  * Mainnet: [0x_b98efe56decceb1bec9faeeaf62500deb0953474_](https://etherscan.io/address/0xb98efe56decceb1bec9faeeaf62500deb0953474)
-  * Polygon: [0x_aF0d978275a2e7e3109F8C6307Ffd281774C623E_](https://polygonscan.com/address/0xaF0d978275a2e7e3109F8C6307Ffd281774C623E)
-  * Görli: [0x_DBdb041842407c109F65b23eA86D99c1E0D94522_](https://goerli.etherscan.io/address/0xDBdb041842407c109F65b23eA86D99c1E0D94522)
-  * Mumbai: [0x_2fd4B676192C701778724408B72e9A29af2eB8c0_](https://mumbai.polygonscan.com/address/0x2fd4B676192C701778724408B72e9A29af2eB8c0)
-  * Rinkeby (deprecated): [0x_2f705615E25D705813cC0E29f4225Db0EDB82eCa_](https://rinkeby.etherscan.io/address/0x2f705615E25D705813cC0E29f4225Db0EDB82eCa)
+  * Mainnet: [0&#x78;_&#x62;98efe56decceb1bec9faeeaf62500deb0953474_](https://etherscan.io/address/0xb98efe56decceb1bec9faeeaf62500deb0953474)
+  * Polygon: [0&#x78;_&#x61;F0d978275a2e7e3109F8C6307Ffd281774C623E_](https://polygonscan.com/address/0xaF0d978275a2e7e3109F8C6307Ffd281774C623E)
+  * Görli: [0&#x78;_&#x44;Bdb041842407c109F65b23eA86D99c1E0D94522_](https://goerli.etherscan.io/address/0xDBdb041842407c109F65b23eA86D99c1E0D94522)
+  * Mumbai: [0&#x78;_&#x32;fd4B676192C701778724408B72e9A29af2eB8c0_](https://mumbai.polygonscan.com/address/0x2fd4B676192C701778724408B72e9A29af2eB8c0)
+  * Rinkeby (deprecated): [0&#x78;_&#x32;f705615E25D705813cC0E29f4225Db0EDB82eCa_](https://rinkeby.etherscan.io/address/0x2f705615E25D705813cC0E29f4225Db0EDB82eCa)
 * **Source code**
-  * [GitHub](https://github.com/PWNFinance/pwn\_contracts/blob/master/contracts/PWNVault.sol)
+  * [GitHub](https://github.com/PWNFinance/pwn_contracts/blob/master/contracts/PWNVault.sol)
 * **ABI**
   * [JSON](https://api.etherscan.io/api?module=contract\&action=getabi\&address=0xb98efe56decceb1bec9faeeaf62500deb0953474)
   * [Text](http://api.etherscan.io/api?module=contract\&action=getabi\&address=0xb98efe56decceb1bec9faeeaf62500deb0953474\&format=raw)

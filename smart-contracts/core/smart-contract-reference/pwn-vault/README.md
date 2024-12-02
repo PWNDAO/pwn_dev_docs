@@ -220,7 +220,7 @@ function _supplyToPool(MultiToken.Asset memory asset, IPoolAdapter poolAdapter, 
 
 Function to verify a complete transfer.
 
-This function takes one argument:
+This function takes four arguments:
 
 * `MultiToken.Asset memory`**`asset`** - The asset to check (see [MultiToken](../../../libraries/multitoken.md))
 * `uint256`**`originalBalance`** - The original balance
