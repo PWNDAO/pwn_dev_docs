@@ -73,8 +73,7 @@
 
 * [PWN Docs](https://docs.pwn.xyz/)
 * [FAQ](https://faq.pwn.xyz/)
-* [Audits](more-documentation/audits/README.md)
-  * [PWN V1.2](more-documentation/audits/pwn-v1.2.md)
+* [Audits](more-documentation/audits.md)
 * [Using PWN without front-end](more-documentation/using-pwn-without-front-end.md)
 
 ## Deprecated
