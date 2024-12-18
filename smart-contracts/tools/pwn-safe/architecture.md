@@ -4,7 +4,7 @@ So how does PWN Safe work altogether? To explain, we'll first look at the Gnosis
 
 ## Safe Guard and Module
 
-<figure><img src="../../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
 As shown in the diagram above, the Safe wallet can be extended by a guard and a module.&#x20;
 

@@ -2,7 +2,7 @@
 
 Before we dive deep into the contracts let's have a look at the high-level architecture.
 
-<figure><img src="../../.gitbook/assets/Architecture.png" alt=""><figcaption><p>PWN smart contract architecture</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Architecture (2).png" alt=""><figcaption><p>PWN smart contract architecture</p></figcaption></figure>
 
 {% tabs %}
 {% tab title="PWN" %}
