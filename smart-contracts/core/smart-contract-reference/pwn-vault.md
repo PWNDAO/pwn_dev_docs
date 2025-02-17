@@ -38,7 +38,7 @@ Takes a supplied asset and pulls it into the vault from the origin.
 
 This function takes two arguments supplied by the caller:
 
-* `MultiToken.Asset`**`asset`** - The transferred asset (see [MultiToken](../../../libraries/multitoken.md))
+* `MultiToken.Asset`**`asset`** - The transferred asset (see [MultiToken](../../libraries/multitoken.md))
 * `address indexed`**`origin`**
 
 #### Implementation
@@ -66,7 +66,7 @@ Pushes a supplied asset from the vault to the beneficiary.
 
 This function takes two arguments supplied by the caller:
 
-* `MultiToken.Asset`**`asset`** - The transferred asset (see [MultiToken](../../../libraries/multitoken.md))
+* `MultiToken.Asset`**`asset`** - The transferred asset (see [MultiToken](../../libraries/multitoken.md))
 * `address indexed`**`beneficiary`**
 
 #### Implementation
@@ -96,7 +96,7 @@ Pushes a supplied asset from the origin to the beneficiary.
 
 This function takes three arguments supplied by the caller:
 
-* `MultiToken.Asset`**`asset`** - The transferred asset (see [MultiToken](../../../libraries/multitoken.md))
+* `MultiToken.Asset`**`asset`** - The transferred asset (see [MultiToken](../../libraries/multitoken.md))
 * `address indexed`**`origin`**
 * `address indexed`**`beneficiary`**
 
@@ -159,7 +159,7 @@ This function withdraws an asset from a pool to a owner.
 
 This function takes four arguments:
 
-* `MultiToken.Asset memory`**`asset`** - The withdrawn asset (see [MultiToken](../../../libraries/multitoken.md))
+* `MultiToken.Asset memory`**`asset`** - The withdrawn asset (see [MultiToken](../../libraries/multitoken.md))
 * `IPoolAdapter`**`poolAdapter`** - An address of a pool adapter
 * `address`**`pool`** - An address of a pool
 * `address`**`owner`** - An address on which behalf the assets are withdrawn
@@ -189,7 +189,7 @@ This function supplies an asset from an owner to a pool.
 
 This function takes four arguments:
 
-* `MultiToken.Asset memory`**`asset`** - The supplied asset (see [MultiToken](../../../libraries/multitoken.md))
+* `MultiToken.Asset memory`**`asset`** - The supplied asset (see [MultiToken](../../libraries/multitoken.md))
 * `IPoolAdapter`**`poolAdapter`** - An address of a pool adapter
 * `address`**`pool`** - An address of a pool
 * `address`**`owner`** - An address on which behalf the assets are supplied
@@ -222,7 +222,7 @@ Function to verify a complete transfer.
 
 This function takes four arguments:
 
-* `MultiToken.Asset memory`**`asset`** - The asset to check (see [MultiToken](../../../libraries/multitoken.md))
+* `MultiToken.Asset memory`**`asset`** - The asset to check (see [MultiToken](../../libraries/multitoken.md))
 * `uint256`**`originalBalance`** - The original balance
 * `address`**`checkedAddress`** - The address to check
 * `bool`**`checkIncreasingBalance`** - A flag to set the check for either balance decrease or increase
@@ -268,7 +268,7 @@ VaultPull event is emitted when a transfer happens from the `origin` to the vaul
 
 This event has two parameters:
 
-* `MultiToken.Asset`**`asset`** - The transferred asset (see [MultiToken](../../../libraries/multitoken.md))
+* `MultiToken.Asset`**`asset`** - The transferred asset (see [MultiToken](../../libraries/multitoken.md))
 * `address indexed`**`origin`**
 
 </details>
@@ -281,7 +281,7 @@ VaultPush event is emitted when a transfer happens from the vault to the `benefi
 
 This event has two parameters:
 
-* `MultiToken.Asset`**`asset`** - The transferred asset (see [MultiToken](../../../libraries/multitoken.md))
+* `MultiToken.Asset`**`asset`** - The transferred asset (see [MultiToken](../../libraries/multitoken.md))
 * `address indexed`**`beneficiary`**
 
 </details>
@@ -294,7 +294,7 @@ VaultPushFrom event is emitted when a transfer happens from the `origin` to the 
 
 This event has three parameters:
 
-* `MultiToken.Asset`**`asset`** - The transferred asset (see [MultiToken](../../../libraries/multitoken.md))
+* `MultiToken.Asset`**`asset`** - The transferred asset (see [MultiToken](../../libraries/multitoken.md))
 * `address indexed`**`origin`**
 * `address indexed`**`beneficiary`**
 
@@ -308,7 +308,7 @@ PoolWithdraw event is emitted when an asset is withdrawn from a pool to an `owne
 
 This event has four parameters:
 
-* `MultiToken.Asset`**`asset`** - The withdrawn asset (see [MultiToken](../../../libraries/multitoken.md))
+* `MultiToken.Asset`**`asset`** - The withdrawn asset (see [MultiToken](../../libraries/multitoken.md))
 * `address indexed`**`poolAdapter`**
 * `address indexed`**`pool`**
 * `address indexed`**`owner`**
@@ -323,7 +323,7 @@ PoolSupply event is emitted when an asset is supplied to a pool from a vault.
 
 This event has four parameters:
 
-* `MultiToken.Asset`**`asset`** - The supplied asset (see [MultiToken](../../../libraries/multitoken.md))
+* `MultiToken.Asset`**`asset`** - The supplied asset (see [MultiToken](../../libraries/multitoken.md))
 * `address indexed`**`poolAdapter`**
 * `address indexed`**`pool`**
 * `address indexed`**`owner`**

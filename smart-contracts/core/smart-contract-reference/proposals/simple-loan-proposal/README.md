@@ -273,6 +273,36 @@ function _getProposalHash(
 
 </details>
 
+<details>
+
+<summary><code>_getLoanDuration</code></summary>
+
+#### Overview
+
+This function returns loan duration given supplied timestamp or duration.
+
+This function takes one argument supplied by the caller:
+
+* `uint32`**`durationOrDate`** - Duration of a loan in seconds. If the value is greater than `10^9`, it's considered a timestamp of the loan end
+
+#### Implementation
+
+```solidity
+function _getLoanDuration(uint32 durationOrDate) internal view returns (uint32) {
+    if (durationOrDate <= 1e9) {
+        // Value is duration
+        return durationOrDate;
+    } else if (durationOrDate >= block.timestamp) {
+        // Value is date
+        return uint32(uint256(durationOrDate) - block.timestamp);
+    } else {
+        revert DefaultDateInPast({ defaultDate: durationOrDate, current: uint32(block.timestamp) });
+    }
+}
+```
+
+</details>
+
 ### Errors
 
 The PWN Simple Loan Offer contract defines eight errors and no events.
@@ -286,6 +316,7 @@ error AcceptorIsProposer(address addr);
 error InvalidRefinancingLoanId(uint256 refinancingLoanId);
 error AvailableCreditLimitExceeded(uint256 used, uint256 limit);
 error CallerNotAllowedAcceptor(address current, address allowed);
+error DefaultDateInPast(uint32 defaultDate, uint32 current);
 ```
 
 <details>
@@ -383,6 +414,19 @@ This error has two parameters:
 
 * `address`**`current`**
 * `address`**`allowed`**
+
+</details>
+
+<details>
+
+<summary><code>DefaultDateInPast</code></summary>
+
+A DefaultDateInPast error is thrown when caller supplies a loan default date that's in the past.
+
+This error has two parameters:
+
+* `uint32`**`defaultDate`**
+* `uint32`**`current`**
 
 </details>
 

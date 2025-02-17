@@ -1,20 +1,20 @@
-# Fungible Proposal
+# Elastic Proposal
 
 ## 1. Summary
 
-PWNSimpleLoanFungibleProposal.sol defines the Fungible Proposal type for Simple Loan and implements functions to make an on-chain proposal and accept proposals.&#x20;
+PWNSimpleLoanElasticProposal.sol defines the Fungible Proposal type for Simple Loan and implements functions to make an on-chain proposal and accept proposals.&#x20;
 
 The Fungible Proposal is not tied to a specific collateral or credit amount. The amount of collateral and credit is specified during the proposal acceptance. Interest can be either accruing or fixed.&#x20;
 
-## 2. Important links
+## 2. Important link
 
-{% embed url="https://github.com/PWNFinance/pwn_contracts/blob/master/src/loan/terms/simple/proposal/PWNSimpleLoanFungibleProposal.sol" %}
+{% embed url="https://github.com/PWNDAO/pwn_contracts/blob/master/src/loan/terms/simple/proposal/PWNSimpleLoanElasticProposal.sol" %}
 
 {% file src="../../../../../.gitbook/assets/PWNSimpleLoanFungibleProposal.json" %}
 
 ## 3. Contract details
 
-* _PWNSimpleLoanFungibleProposal.sol_ is written in Solidity version 0.8.16
+* _PWNSimpleLoanElasticProposal.sol_ is written in Solidity version 0.8.16
 
 ### Features
 
@@ -102,7 +102,7 @@ function acceptProposal(
     loanTerms = PWNSimpleLoan.Terms({
         lender: proposal.isOffer ? proposal.proposer : acceptor,
         borrower: proposal.isOffer ? acceptor : proposal.proposer,
-        duration: proposal.duration,
+        duration: _getLoanDuration(proposal.durationOrDate),
         collateral: MultiToken.Asset({
             category: proposal.collateralCategory,
             assetAddress: proposal.collateralAddress,
@@ -221,22 +221,26 @@ function decodeProposalData(bytes memory proposalData) public pure returns (Prop
 
 <details>
 
-<summary><code>getCreditAmount</code></summary>
+<summary><code>getCollateralAmount</code></summary>
 
 #### Overview
 
-Function to compute credit amount from collateral amount and credit per collateral unit.
+Function to compute collateral amount from credit amount and credit per collateral unit.
 
 This function takes two arguments supplied by the caller:
 
-* `uint256`**`collateralAmount`** - Amount of collateral
+* `uint256`**`creditAmount`** - Amount of credit
 * `uint256`**`creditPerCollateralUnit`** - Amount of credit per collateral unit with 38 decimals
 
 #### Implementation
 
 ```solidity
-function getCreditAmount(uint256 collateralAmount, uint256 creditPerCollateralUnit) public pure returns (uint256) {
-    return Math.mulDiv(collateralAmount, creditPerCollateralUnit, CREDIT_PER_COLLATERAL_UNIT_DENOMINATOR);
+function getCollateralAmount(uint256 creditAmount, uint256 creditPerCollateralUnit) public pure returns (uint256) {
+    if (creditPerCollateralUnit == 0) {
+        revert ZeroCreditPerCollateralUnit();
+    }
+
+    return Math.mulDiv(creditAmount, CREDIT_PER_COLLATERAL_UNIT_DENOMINATOR, creditPerCollateralUnit);
 }
 ```
 
@@ -244,7 +248,7 @@ function getCreditAmount(uint256 collateralAmount, uint256 creditPerCollateralUn
 
 ### Events
 
-The PWN Simple Loan Fungible Proposal contract defines one event and two errors.
+The PWN Simple Loan Elastic Proposal contract defines one event and two errors.
 
 ```solidity
 event ProposalMade(bytes32 indexed proposalHash, address indexed proposer, Proposal proposal);
@@ -268,7 +272,7 @@ This event has three parameters:
 
 ```solidity
 error MinCollateralAmountNotSet();
-error InsufficientCollateralAmount(uint256 current, uint256 limit);
+error InsufficientCreditAmount(uint256 current, uint256 limit);
 ```
 
 <details>
@@ -283,9 +287,9 @@ This error doesn't define any parameters.
 
 <details>
 
-<summary><code>InsufficientCollateralAmount</code></summary>
+<summary><code>InsufficientCreditAmount</code></summary>
 
-InsufficientCollateralAmount error is thrown when acceptor provides insufficient collateral amount.
+InsufficientCreditAmount error is thrown when acceptor provides insufficient credit amount.
 
 This error has two parameters:
 
@@ -296,6 +300,6 @@ This error has two parameters:
 
 ### `Proposal` struct
 
-<table><thead><tr><th width="156.09421454876235">Type</th><th width="265.4565628764715">Name</th><th>Comment</th></tr></thead><tbody><tr><td><a data-footnote-ref href="#user-content-fn-1"><code>MultiToken.Category</code></a></td><td><code>collateralCategory</code></td><td>Corresponding collateral category</td></tr><tr><td><code>address</code></td><td><code>collateralAddress</code></td><td>Address of a loan collateral</td></tr><tr><td><code>uint256</code></td><td><code>collateralId</code></td><td>ID of a collateral. Zero if ERC-20</td></tr><tr><td><code>uint256</code></td><td><code>minCollateralAmount</code></td><td>Minimal amount of tokens used as a collateral</td></tr><tr><td><code>bool</code></td><td><code>checkCollateralStateFingerprint</code></td><td>Flag to enable check of collaterals state fingerprint (see <a href="https://eips.ethereum.org/EIPS/eip-5646">ERC-5</a><a href="https://eips.ethereum.org/EIPS/eip-5646">646</a>)</td></tr><tr><td><code>bytes32</code></td><td><code>collateralStateFingerprint</code></td><td>A collateral state fingerprint (see <a href="https://eips.ethereum.org/EIPS/eip-5646">ERC-5</a><a href="https://eips.ethereum.org/EIPS/eip-5646">646</a>)</td></tr><tr><td><code>address</code></td><td><code>creditAddress</code></td><td>Address of credit asset</td></tr><tr><td><code>uint256</code></td><td><code>creditPerCollateralUnit</code></td><td>Amount of tokens that are offered per collateral unit with 38 decimals</td></tr><tr><td><code>uint256</code></td><td><code>availableCreditLimit</code></td><td>Maximum credit limit of credit asset</td></tr><tr><td><code>uint256</code></td><td><code>fixedInterestAmount</code></td><td>Fixed interest amount in credit tokens. It is the minimum amount of interest which has to be paid by a borrower</td></tr><tr><td><code>uint24</code></td><td><code>accruingInterestAPR</code></td><td>Accruing interest APR with 2 decimals</td></tr><tr><td><code>uint32</code></td><td><code>duration</code></td><td>Loan duration in seconds</td></tr><tr><td><code>uint40</code></td><td><code>expiration</code></td><td>Proposal expiration unix timestamp in seconds</td></tr><tr><td><code>address</code></td><td><code>allowedAcceptor</code></td><td>Allowed acceptor address. Zero address if propsal can be accepted by any account</td></tr><tr><td><code>address</code></td><td><code>proposer</code></td><td>Proposer address</td></tr><tr><td><code>bytes32</code></td><td><code>proposerSpecHash</code></td><td>Hash of a proposer specific data, which must be provided during a loan creation</td></tr><tr><td><code>bool</code></td><td><code>isOffer</code></td><td>Flag to determine if a proposal is an offer or loan request</td></tr><tr><td><code>uint256</code></td><td><code>refinancingLoanId</code></td><td>ID of a loan to be refinanced. Zero if creating a new loan.</td></tr><tr><td><code>uint256</code></td><td><code>nonceSpace</code></td><td>Nonce space of the proposal</td></tr><tr><td><code>uint256</code></td><td><code>nonce</code></td><td>Nonce of the proposal</td></tr><tr><td><code>address</code></td><td><code>loanContract</code></td><td>Loan type contract</td></tr></tbody></table>
+<table><thead><tr><th width="156.09421454876235">Type</th><th width="265.4565628764715">Name</th><th>Comment</th></tr></thead><tbody><tr><td><a data-footnote-ref href="#user-content-fn-1"><code>MultiToken.Category</code></a></td><td><code>collateralCategory</code></td><td>Corresponding collateral category</td></tr><tr><td><code>address</code></td><td><code>collateralAddress</code></td><td>Address of a loan collateral</td></tr><tr><td><code>uint256</code></td><td><code>collateralId</code></td><td>ID of a collateral. Zero if ERC-20</td></tr><tr><td><code>uint256</code></td><td><code>minCollateralAmount</code></td><td>Minimal amount of tokens used as a collateral</td></tr><tr><td><code>bool</code></td><td><code>checkCollateralStateFingerprint</code></td><td>Flag to enable check of collaterals state fingerprint (see <a href="https://eips.ethereum.org/EIPS/eip-5646">ERC-5</a><a href="https://eips.ethereum.org/EIPS/eip-5646">646</a>)</td></tr><tr><td><code>bytes32</code></td><td><code>collateralStateFingerprint</code></td><td>A collateral state fingerprint (see <a href="https://eips.ethereum.org/EIPS/eip-5646">ERC-5</a><a href="https://eips.ethereum.org/EIPS/eip-5646">646</a>)</td></tr><tr><td><code>address</code></td><td><code>creditAddress</code></td><td>Address of credit asset</td></tr><tr><td><code>uint256</code></td><td><code>creditPerCollateralUnit</code></td><td>Amount of tokens that are offered per collateral unit with 38 decimals</td></tr><tr><td><code>uint256</code></td><td><code>availableCreditLimit</code></td><td>Maximum credit limit of credit asset</td></tr><tr><td><code>uint256</code></td><td><code>fixedInterestAmount</code></td><td>Fixed interest amount in credit tokens. It is the minimum amount of interest which has to be paid by a borrower</td></tr><tr><td><code>uint24</code></td><td><code>accruingInterestAPR</code></td><td>Accruing interest APR with 2 decimals</td></tr><tr><td><code>uint32</code></td><td><code>durationOrDate</code></td><td>Duration of a loan in seconds. If the value is greater than <code>10^9</code>, it's considered a timestamp of the loan end</td></tr><tr><td><code>uint40</code></td><td><code>expiration</code></td><td>Proposal expiration unix timestamp in seconds</td></tr><tr><td><code>address</code></td><td><code>allowedAcceptor</code></td><td>Allowed acceptor address. Zero address if propsal can be accepted by any account</td></tr><tr><td><code>address</code></td><td><code>proposer</code></td><td>Proposer address</td></tr><tr><td><code>bytes32</code></td><td><code>proposerSpecHash</code></td><td>Hash of a proposer specific data, which must be provided during a loan creation</td></tr><tr><td><code>bool</code></td><td><code>isOffer</code></td><td>Flag to determine if a proposal is an offer or loan request</td></tr><tr><td><code>uint256</code></td><td><code>refinancingLoanId</code></td><td>ID of a loan to be refinanced. Zero if creating a new loan.</td></tr><tr><td><code>uint256</code></td><td><code>nonceSpace</code></td><td>Nonce space of the proposal</td></tr><tr><td><code>uint256</code></td><td><code>nonce</code></td><td>Nonce of the proposal</td></tr><tr><td><code>address</code></td><td><code>loanContract</code></td><td>Loan type contract</td></tr></tbody></table>
 
 [^1]: A **category** is defined as an [enum](https://docs.soliditylang.org/en/v0.8.12/structure-of-a-contract.html?highlight=enum#enum-types) and can have values `ERC20`, `ERC721` or `ERC1155`.

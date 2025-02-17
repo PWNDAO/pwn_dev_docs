@@ -31,9 +31,9 @@ Minumum duration of a simple loan is 10 minutes.
 
 ### Inherited contracts, implemented Interfaces and ERCs
 
-* [PWNVault](../pwn-vault/)
+* [PWNVault](../pwn-vault.md)
 * [IERC5646](https://eips.ethereum.org/EIPS/eip-5646)
-* [IPWNLoanMetadataProvider](https://github.com/PWNFinance/pwn\_contracts/blob/master/src/loan/token/IPWNLoanMetadataProvider.sol)
+* [IPWNLoanMetadataProvider](https://github.com/PWNFinance/pwn_contracts/blob/master/src/loan/token/IPWNLoanMetadataProvider.sol)
 
 ### Functions
 
