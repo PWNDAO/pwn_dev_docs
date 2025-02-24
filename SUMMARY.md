@@ -31,6 +31,7 @@
       * [Pool Adapter](smart-contracts/core/smart-contract-reference/peripheral-contracts/pool-adapter/README.md)
         * [Aave](https://github.com/PWNFinance/pwn_contracts_periphery/blob/main/src/pool-adapter/AaveAdapter.sol)
         * [Compound](https://github.com/PWNFinance/pwn_contracts_periphery/blob/main/src/pool-adapter/CompoundAdapter.sol)
+        * [ERC4626](https://github.com/PWNDAO/pwn_contracts_periphery/blob/main/src/pool-adapter/ERC4626Adapter.sol)
     * [Miscellaneous](smart-contracts/core/smart-contract-reference/miscellaneous/README.md)
       * [PWN Fee Calculator](smart-contracts/core/smart-contract-reference/miscellaneous/pwn-fee-calculator.md)
       * [PWN Signature Checker](smart-contracts/core/smart-contract-reference/miscellaneous/pwn-signature-checker.md)
