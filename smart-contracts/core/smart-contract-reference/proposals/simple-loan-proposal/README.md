@@ -82,23 +82,21 @@ Makes necessary checks for accepting a proposal and reverts if any loan paramete
 
 This function takes six arguments:
 
-* `address`**`acceptor`** - Address of a proposal acceptor
-* `uint256`**`refinancingLoanId`** - Refinancing loan ID
-* `bytes32`**`proposalHash`** - Proposal hash
-* `bytes32[] calldata`**`proposalInclusionProof`** - Multiproposal inclusion proof. Empty if single proposal
-* `bytes calldata`**`signature`** - Signature of a proposal
-* `ProposalBase memory`**`proposal`** - [`ProposalBase`](./#proposalbase-struct) struct
+* `bytes32 proposalHash` - Hash of the proposal
+* `bytes32[] calldata proposalInclusionProof` - Multiproposal inclusion proof. Empty if single proposal.
+* `bytes calldata signature` - Signature of the proposal
+* `ProposalBase memory proposal` - [ProposalBase](./#proposalbase-struct) struct
+* `ProposalValuesBase memory proposalValues` - [ProposalValues](./#proposalvalues-struct) struct
 
 #### Implementation
 
 ```solidity
 function _acceptProposal(
-    address acceptor,
-    uint256 refinancingLoanId,
     bytes32 proposalHash,
     bytes32[] calldata proposalInclusionProof,
     bytes calldata signature,
-    ProposalBase memory proposal
+    ProposalBase memory proposal,
+    ProposalValuesBase memory proposalValues
 ) internal {
     // Check loan contract
     if (msg.sender != proposal.loanContract) {
@@ -132,17 +130,17 @@ function _acceptProposal(
     }
 
     // Check proposer is not acceptor
-    if (proposal.proposer == acceptor) {
-        revert AcceptorIsProposer({ addr: acceptor});
+    if (proposal.proposer == proposalValues.acceptor) {
+        revert AcceptorIsProposer({ addr: proposalValues.acceptor});
     }
 
     // Check refinancing proposal
-    if (refinancingLoanId == 0) {
+    if (proposalValues.refinancingLoanId == 0) {
         if (proposal.refinancingLoanId != 0) {
             revert InvalidRefinancingLoanId({ refinancingLoanId: proposal.refinancingLoanId });
         }
     } else {
-        if (refinancingLoanId != proposal.refinancingLoanId) {
+        if (proposalValues.refinancingLoanId != proposal.refinancingLoanId) {
             if (proposal.refinancingLoanId != 0 || !proposal.isOffer) {
                 revert InvalidRefinancingLoanId({ refinancingLoanId: proposal.refinancingLoanId });
             }
@@ -163,23 +161,26 @@ function _acceptProposal(
         });
     }
 
-    // Check propsal is accepted by an allowed address
-    if (proposal.allowedAcceptor != address(0) && acceptor != proposal.allowedAcceptor) {
-        revert CallerNotAllowedAcceptor({ current: acceptor, allowed: proposal.allowedAcceptor });
+    // Check proposal acceptor controller
+    if (proposal.acceptorController != address(0)) {
+        if (IPWNAcceptorController(proposal.acceptorController).checkAcceptor({
+            acceptor: proposalValues.acceptor,
+            proposerData: proposal.acceptorControllerData,
+            acceptorData: proposalValues.acceptorControllerData
+        }) != type(IPWNAcceptorController).interfaceId) {
+            revert InvalidAcceptorController({ acceptorController: proposal.acceptorController });
+        }
     }
 
     if (proposal.availableCreditLimit == 0) {
         // Revoke nonce if credit limit is 0, proposal can be accepted only once
         revokedNonce.revokeNonce(proposal.proposer, proposal.nonceSpace, proposal.nonce);
-    } else if (creditUsed[proposalHash] + proposal.creditAmount <= proposal.availableCreditLimit) {
-        // Increase used credit if credit limit is not exceeded
-        creditUsed[proposalHash] += proposal.creditAmount;
     } else {
-        // Revert if credit limit is exceeded
-        revert AvailableCreditLimitExceeded({
-            used: creditUsed[proposalHash] + proposal.creditAmount,
-            limit: proposal.availableCreditLimit
-        });
+        // Update utilized credit
+        // Note: This will revert if utilized credit would exceed the available credit limit
+        utilizedCredit.utilizeCredit(
+            proposal.proposer, proposal.utilizedCreditId, proposal.creditAmount, proposal.availableCreditLimit
+        );
     }
 
     // Check collateral state fingerprint if needed
@@ -208,9 +209,6 @@ function _acceptProposal(
         }
     }
 }
-
-}
-
 ```
 
 </details>
@@ -315,7 +313,7 @@ error CallerIsNotStatedProposer(address addr);
 error AcceptorIsProposer(address addr);
 error InvalidRefinancingLoanId(uint256 refinancingLoanId);
 error AvailableCreditLimitExceeded(uint256 used, uint256 limit);
-error CallerNotAllowedAcceptor(address current, address allowed);
+error InvalidAcceptorController(address acceptorController);
 error DefaultDateInPast(uint32 defaultDate, uint32 current);
 ```
 
@@ -406,14 +404,13 @@ This error has two parameters:
 
 <details>
 
-<summary><code>CallerNotAllowedAcceptor</code></summary>
+<summary><code>InvalidAcceptorController</code></summary>
 
-A CallerNotAllowedAcceptor error is thrown when caller is not allowed to accept a proposal.
+A InvalidAcceptorController error is thrown when supplied acceptor controller isn't a valid acceptor controller contract.
 
-This error has two parameters:
+This error has one parameter:
 
-* `address`**`current`**
-* `address`**`allowed`**
+* `address`**`acceptorController`**
 
 </details>
 
@@ -432,7 +429,11 @@ This error has two parameters:
 
 ### `ProposalBase` Struct
 
-<table><thead><tr><th width="124.09421454876235">Type</th><th width="211.45656287647148">Name</th><th>Comment</th></tr></thead><tbody><tr><td><code>address</code></td><td><code>collateralAddress</code></td><td>Address of a loan collateral</td></tr><tr><td><code>uint256</code></td><td><code>collateralId</code></td><td>ID of a collateral. Zero if ERC-20</td></tr><tr><td><code>bool</code></td><td><code>checkCollateralStateFingerprint</code></td><td>Flag to enable check of collaterals state fingerprint (see <a href="https://eips.ethereum.org/EIPS/eip-5646">ERC-5</a><a href="https://eips.ethereum.org/EIPS/eip-5646">646</a>)</td></tr><tr><td><code>bytes32</code></td><td><code>collateralStateFingerprint</code></td><td>A collateral state fingerprint (see <a href="https://eips.ethereum.org/EIPS/eip-5646">ERC-5</a><a href="https://eips.ethereum.org/EIPS/eip-5646">646</a>)</td></tr><tr><td><code>uint256</code></td><td><code>creditAmount</code></td><td>Amount of credit asset</td></tr><tr><td><code>uint256</code></td><td><code>availableCreditLimit</code></td><td>Maximum credit limit of credit asset</td></tr><tr><td><code>uint40</code></td><td><code>expiration</code></td><td>Proposal expiration unix timestamp in seconds</td></tr><tr><td><code>address</code></td><td><code>allowedAcceptor</code></td><td>Allowed acceptor address. Zero address if propsal can be accepted by any account</td></tr><tr><td><code>address</code></td><td><code>proposer</code></td><td>Proposer address</td></tr><tr><td><code>bool</code></td><td><code>isOffer</code></td><td>Flag to determine if a proposal is an offer or loan request</td></tr><tr><td><code>uint256</code></td><td><code>refinancingLoanId</code></td><td>ID of a loan to be refinanced. Zero if creating a new loan.</td></tr><tr><td><code>uint256</code></td><td><code>nonceSpace</code></td><td>Nonce space of the proposal</td></tr><tr><td><code>uint256</code></td><td><code>nonce</code></td><td>Nonce of the proposal</td></tr><tr><td><code>address</code></td><td><code>loanContract</code></td><td>Loan type contract</td></tr></tbody></table>
+<table><thead><tr><th width="124.09421454876235">Type</th><th width="211.45656287647148">Name</th><th>Comment</th></tr></thead><tbody><tr><td><code>address</code></td><td><code>collateralAddress</code></td><td>Address of a loan collateral</td></tr><tr><td><code>uint256</code></td><td><code>collateralId</code></td><td>ID of a collateral. Zero if ERC-20</td></tr><tr><td><code>bool</code></td><td><code>checkCollateralStateFingerprint</code></td><td>Flag to enable check of collaterals state fingerprint (see <a href="https://eips.ethereum.org/EIPS/eip-5646">ERC-5</a><a href="https://eips.ethereum.org/EIPS/eip-5646">646</a>)</td></tr><tr><td><code>bytes32</code></td><td><code>collateralStateFingerprint</code></td><td>A collateral state fingerprint (see <a href="https://eips.ethereum.org/EIPS/eip-5646">ERC-5</a><a href="https://eips.ethereum.org/EIPS/eip-5646">646</a>)</td></tr><tr><td><code>uint256</code></td><td><code>creditAmount</code></td><td>Amount of credit asset</td></tr><tr><td><code>uint256</code></td><td><code>availableCreditLimit</code></td><td>Maximum credit limit of credit asset</td></tr><tr><td><code>uint40</code></td><td><code>expiration</code></td><td>Proposal expiration unix timestamp in seconds</td></tr><tr><td><code>address</code></td><td><code>acceptorController</code></td><td>Address of <a href="../../peripheral-contracts/acceptor-controller/">Acceptor Controller</a> contract that will verify submitted acceptor data</td></tr><tr><td><code>bytes</code></td><td><code>acceptorControllerData</code></td><td>Data provided by proposer to be verified by <a href="../../peripheral-contracts/acceptor-controller/">Acceptor Controller</a></td></tr><tr><td><code>address</code></td><td><code>proposer</code></td><td>Proposer address</td></tr><tr><td><code>bool</code></td><td><code>isOffer</code></td><td>Flag to determine if a proposal is an offer or loan request</td></tr><tr><td><code>uint256</code></td><td><code>refinancingLoanId</code></td><td>ID of a loan to be refinanced. Zero if creating a new loan.</td></tr><tr><td><code>uint256</code></td><td><code>nonceSpace</code></td><td>Nonce space of the proposal</td></tr><tr><td><code>uint256</code></td><td><code>nonce</code></td><td>Nonce of the proposal</td></tr><tr><td><code>address</code></td><td><code>loanContract</code></td><td>Loan type contract</td></tr></tbody></table>
+
+### `ProposalValues` Struct
+
+<table><thead><tr><th width="124.09421454876235">Type</th><th width="270.4565628764715">Name</th><th>Comment</th></tr></thead><tbody><tr><td><code>uint256</code></td><td><code>refinancingLoanId</code></td><td>Loan ID to refinance if refinancing a loan</td></tr><tr><td><code>address</code></td><td><code>acceptor</code></td><td>Address of the acceptor</td></tr><tr><td><code>bytes</code></td><td><code>acceptorControllerData</code></td><td>Data provided by proposal acceptor to be verified by <a href="../../peripheral-contracts/acceptor-controller/">Acceptor Controller</a></td></tr></tbody></table>
 
 ### `Multiproposal` Struct
 

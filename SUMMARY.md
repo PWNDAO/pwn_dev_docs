@@ -25,6 +25,8 @@
     * [PWN LOAN](smart-contracts/core/smart-contract-reference/pwn-loan.md)
     * [PWN Revoked Nonce](smart-contracts/core/smart-contract-reference/pwn-revoked-nonce.md)
     * [Peripheral Contracts](smart-contracts/core/smart-contract-reference/peripheral-contracts/README.md)
+      * [Acceptor Controller](smart-contracts/core/smart-contract-reference/peripheral-contracts/acceptor-controller/README.md)
+        * [World ID](smart-contracts/core/smart-contract-reference/peripheral-contracts/acceptor-controller/world-id.md)
       * [State Fingerprint Computer](smart-contracts/core/smart-contract-reference/peripheral-contracts/state-fingerprint-computer/README.md)
         * [UniV3](https://github.com/PWNFinance/pwn_contracts_periphery/blob/main/src/state-fingerprint-computer/UniV3PosStateFingerpringComputer.sol)
         * [Chicken Bonds](https://github.com/PWNFinance/pwn_contracts_periphery/blob/main/src/state-fingerprint-computer/ChickenBondStateFingerpringComputer.sol)

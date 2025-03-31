@@ -39,7 +39,7 @@ This function takes five arguments supplied by the caller:
 
 * `address`**`acceptor`** - Address of a proposal acceptor
 * `uint256`**`refinancingLoanId`** - Refinancing loan ID
-* `bytes32 calldata`**`proposalData`** - Encoded proposal struct
+* `bytes32 calldata`**`proposalData`** - Encoded [Proposal](simple-proposal.md#proposal-struct) and [ProposalValues](simple-proposal.md#proposalvalues-struct) struct
 * `bytes32[] calldata`**`proposalInclusionProof`** - Multiproposal inclusion proof. Empty if single proposal
 * `bytes calldata`**`signature`** - Signature of a proposal
 
@@ -54,15 +54,19 @@ function acceptProposal(
     bytes calldata signature
 ) override external returns (bytes32 proposalHash, PWNSimpleLoan.Terms memory loanTerms) {
     // Decode proposal data
-    Proposal memory proposal = decodeProposalData(proposalData);
+    (Proposal memory proposal, ProposalValues memory proposalValues) = decodeProposalData(proposalData);
 
     // Make proposal hash
-    proposalHash = _getProposalHash(PROPOSAL_TYPEHASH, abi.encode(proposal));
+    proposalHash = _getProposalHash(PROPOSAL_TYPEHASH, _erc712EncodeProposal(proposal));
+
+    ProposalValuesBase memory proposalValuesBase = ProposalValuesBase({
+        refinancingLoanId: refinancingLoanId,
+        acceptor: acceptor,
+        acceptorControllerData: proposalValues.acceptorControllerData
+    });
 
     // Try to accept proposal
     _acceptProposal(
-        acceptor,
-        refinancingLoanId,
         proposalHash,
         proposalInclusionProof,
         signature,
@@ -73,15 +77,18 @@ function acceptProposal(
             collateralStateFingerprint: proposal.collateralStateFingerprint,
             creditAmount: proposal.creditAmount,
             availableCreditLimit: proposal.availableCreditLimit,
+            utilizedCreditId: proposal.utilizedCreditId,
             expiration: proposal.expiration,
-            allowedAcceptor: proposal.allowedAcceptor,
+            acceptorController: proposal.acceptorController,
+            acceptorControllerData: proposal.acceptorControllerData,
             proposer: proposal.proposer,
             isOffer: proposal.isOffer,
             refinancingLoanId: proposal.refinancingLoanId,
             nonceSpace: proposal.nonceSpace,
             nonce: proposal.nonce,
             loanContract: proposal.loanContract
-        })
+        }),
+        proposalValuesBase
     );
 
     // Create loan terms object
@@ -145,13 +152,13 @@ This function returns supplied proposals hash according to [EIP-712](https://eip
 
 This function takes one argument supplied by the caller:
 
-* `Proposal calldata`**`proposal`** - Proposal struct to be hashed
+* `Proposal calldata`**`proposal`** - [Proposal](simple-proposal.md#proposal-struct) struct to be hashed
 
 #### Implementation
 
 ```solidity
 function getProposalHash(Proposal calldata proposal) public view returns (bytes32) {
-    return _getProposalHash(PROPOSAL_TYPEHASH, abi.encode(proposal));
+    return _getProposalHash(PROPOSAL_TYPEHASH, _erc712EncodeProposal(proposal));
 }
 ```
 
@@ -163,17 +170,21 @@ function getProposalHash(Proposal calldata proposal) public view returns (bytes3
 
 #### Overview
 
-Function to encode a proposal struct.
+Function to encode a proposal data.
 
 This function takes one argument supplied by the caller:
 
-* `Proposal memory`**`proposal`** - Proposal struct to be encoded
+* `Proposal memory`**`proposal`** - [Proposal](simple-proposal.md#proposal-struct) struct to be encoded
+* `ProposalValues memory`**`proposalValues`** - [ProposalValues](simple-proposal.md#proposalvalues-struct) struct to be encoded
 
 #### Implementation
 
 ```solidity
-function encodeProposalData(Proposal memory proposal) external pure returns (bytes memory) {
-    return abi.encode(proposal);
+function encodeProposalData(
+    Proposal memory proposal,
+    ProposalValues memory proposalValues
+) external pure returns (bytes memory) {
+    return abi.encode(proposal, proposalValues);
 }
 ```
 
@@ -185,17 +196,17 @@ function encodeProposalData(Proposal memory proposal) external pure returns (byt
 
 #### Overview
 
-Function to decode an encoded proposal struct.
+Function to decode encoded proposal data.
 
 This function takes one argument supplied by the caller:
 
-* `bytes memory`**`proposalData`** - Encoded proposal data
+* `bytes memory`**`proposalData`** - Encoded [Proposal](simple-proposal.md#proposal-struct) and [ProposalValues](simple-proposal.md#proposalvalues-struct) data
 
 #### Implementation
 
 ```solidity
-function decodeProposalData(bytes memory proposalData) public pure returns (Proposal memory) {
-    return abi.decode(proposalData, (Proposal));
+function decodeProposalData(bytes memory proposalData) public pure returns (Proposal memory, ProposalValues memory) {
+    return abi.decode(proposalData, (Proposal, ProposalValues));
 }
 ```
 
@@ -225,6 +236,12 @@ This event has three parameters:
 
 ### `Proposal` struct
 
-<table><thead><tr><th width="156.09421454876235">Type</th><th width="243.45656287647148">Name</th><th>Comment</th></tr></thead><tbody><tr><td><a data-footnote-ref href="#user-content-fn-1"><code>MultiToken.Category</code></a></td><td><code>collateralCategory</code></td><td>Corresponding collateral category</td></tr><tr><td><code>address</code></td><td><code>collateralAddress</code></td><td>Address of a loan collateral</td></tr><tr><td><code>uint256</code></td><td><code>collateralId</code></td><td>ID of a collateral. Zero if ERC-20</td></tr><tr><td><code>uint256</code></td><td><code>collateralAmount</code></td><td>Amount of a collateral. Zero if ERC-721</td></tr><tr><td><code>bool</code></td><td><code>checkCollateralStateFingerprint</code></td><td>Flag to enable check of collaterals state fingerprint (see <a href="https://eips.ethereum.org/EIPS/eip-5646">ERC-5</a><a href="https://eips.ethereum.org/EIPS/eip-5646">646</a>)</td></tr><tr><td><code>bytes32</code></td><td><code>collateralStateFingerprint</code></td><td>A collateral state fingerprint (see <a href="https://eips.ethereum.org/EIPS/eip-5646">ERC-5</a><a href="https://eips.ethereum.org/EIPS/eip-5646">646</a>)</td></tr><tr><td><code>address</code></td><td><code>creditAddress</code></td><td>Address of credit asset</td></tr><tr><td><code>uint256</code></td><td><code>creditAmount</code></td><td>Amount of credit asset</td></tr><tr><td><code>uint256</code></td><td><code>availableCreditLimit</code></td><td>Maximum credit limit of credit asset</td></tr><tr><td><code>uint256</code></td><td><code>fixedInterestAmount</code></td><td>Fixed interest amount in credit tokens. It is the minimum amount of interest which has to be paid by a borrower</td></tr><tr><td><code>uint24</code></td><td><code>accruingInterestAPR</code></td><td>Accruing interest APR with 2 decimals</td></tr><tr><td><code>uint32</code></td><td><code>durationOrDate</code></td><td>Duration of a loan in seconds. If the value is greater than <code>10^9</code>, it's considered a timestamp of the loan end</td></tr><tr><td><code>uint40</code></td><td><code>expiration</code></td><td>Proposal expiration unix timestamp in seconds</td></tr><tr><td><code>address</code></td><td><code>allowedAcceptor</code></td><td>Allowed acceptor address. Zero address if propsal can be accepted by any account</td></tr><tr><td><code>address</code></td><td><code>proposer</code></td><td>Proposer address</td></tr><tr><td><code>bytes32</code></td><td><code>proposerSpecHash</code></td><td>Hash of a proposer specific data, which must be provided during a loan creation</td></tr><tr><td><code>bool</code></td><td><code>isOffer</code></td><td>Flag to determine if a proposal is an offer or loan request</td></tr><tr><td><code>uint256</code></td><td><code>refinancingLoanId</code></td><td>ID of a loan to be refinanced. Zero if creating a new loan.</td></tr><tr><td><code>uint256</code></td><td><code>nonceSpace</code></td><td>Nonce space of the proposal</td></tr><tr><td><code>uint256</code></td><td><code>nonce</code></td><td>Nonce of the proposal</td></tr><tr><td><code>address</code></td><td><code>loanContract</code></td><td>Loan type contract</td></tr></tbody></table>
+<table><thead><tr><th width="156.09421454876235">Type</th><th width="243.45656287647148">Name</th><th>Comment</th></tr></thead><tbody><tr><td><a data-footnote-ref href="#user-content-fn-1"><code>MultiToken.Category</code></a></td><td><code>collateralCategory</code></td><td>Corresponding collateral category</td></tr><tr><td><code>address</code></td><td><code>collateralAddress</code></td><td>Address of a loan collateral</td></tr><tr><td><code>uint256</code></td><td><code>collateralId</code></td><td>ID of a collateral. Zero if ERC-20</td></tr><tr><td><code>uint256</code></td><td><code>collateralAmount</code></td><td>Amount of a collateral. Zero if ERC-721</td></tr><tr><td><code>bool</code></td><td><code>checkCollateralStateFingerprint</code></td><td>Flag to enable check of collaterals state fingerprint (see <a href="https://eips.ethereum.org/EIPS/eip-5646">ERC-5</a><a href="https://eips.ethereum.org/EIPS/eip-5646">646</a>)</td></tr><tr><td><code>bytes32</code></td><td><code>collateralStateFingerprint</code></td><td>A collateral state fingerprint (see <a href="https://eips.ethereum.org/EIPS/eip-5646">ERC-5</a><a href="https://eips.ethereum.org/EIPS/eip-5646">646</a>)</td></tr><tr><td><code>address</code></td><td><code>creditAddress</code></td><td>Address of credit asset</td></tr><tr><td><code>uint256</code></td><td><code>creditAmount</code></td><td>Amount of credit asset</td></tr><tr><td><code>uint256</code></td><td><code>availableCreditLimit</code></td><td>Maximum credit limit of credit asset</td></tr><tr><td><code>uint256</code></td><td><code>fixedInterestAmount</code></td><td>Fixed interest amount in credit tokens. It is the minimum amount of interest which has to be paid by a borrower</td></tr><tr><td><code>uint24</code></td><td><code>accruingInterestAPR</code></td><td>Accruing interest APR with 2 decimals</td></tr><tr><td><code>uint32</code></td><td><code>durationOrDate</code></td><td>Duration of a loan in seconds. If the value is greater than <code>10^9</code>, it's considered a timestamp of the loan end</td></tr><tr><td><code>uint40</code></td><td><code>expiration</code></td><td>Proposal expiration unix timestamp in seconds</td></tr><tr><td><code>address</code></td><td><code>acceptorController</code></td><td>Address of <a href="../../peripheral-contracts/acceptor-controller/">Acceptor Controller</a> contract that will verify submitted acceptor data</td></tr><tr><td><code>bytes</code></td><td><code>acceptorControllerData</code></td><td>Data provided by proposer to be verified by <a href="../../peripheral-contracts/acceptor-controller/">Acceptor Controller</a></td></tr><tr><td><code>address</code></td><td><code>proposer</code></td><td>Proposer address</td></tr><tr><td><code>bytes32</code></td><td><code>proposerSpecHash</code></td><td>Hash of a proposer specific data, which must be provided during a loan creation</td></tr><tr><td><code>bool</code></td><td><code>isOffer</code></td><td>Flag to determine if a proposal is an offer or loan request</td></tr><tr><td><code>uint256</code></td><td><code>refinancingLoanId</code></td><td>ID of a loan to be refinanced. Zero if creating a new loan.</td></tr><tr><td><code>uint256</code></td><td><code>nonceSpace</code></td><td>Nonce space of the proposal</td></tr><tr><td><code>uint256</code></td><td><code>nonce</code></td><td>Nonce of the proposal</td></tr><tr><td><code>address</code></td><td><code>loanContract</code></td><td>Loan type contract</td></tr></tbody></table>
+
+### `ProposalValues` struct
+
+<table><thead><tr><th width="156.09421454876235">Type</th><th width="243.45656287647148">Name</th><th>Comment</th></tr></thead><tbody><tr><td><code>bytes</code></td><td><code>acceptorControllerData</code></td><td>Data provided by proposal acceptor to be passed to the acceptor controller if defined in the <a href="simple-proposal.md#proposal-struct">Proposal</a> struct</td></tr></tbody></table>
+
+
 
 [^1]: A **category** is defined as an [enum](https://docs.soliditylang.org/en/v0.8.12/structure-of-a-contract.html?highlight=enum#enum-types) and can have values `ERC20`, `ERC721` or `ERC1155`.

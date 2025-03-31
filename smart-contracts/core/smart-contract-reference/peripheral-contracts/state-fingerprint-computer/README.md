@@ -2,7 +2,7 @@
 
 ## 1. Summary
 
-_IStateFingerpringComputer.sol_ defines interface each State Fingerprint Computer contract has to implement. State Fingerprint Computers allow usage of dynamic assets in the PWN Protocol that don't implement [ERC-5646](https://eips.ethereum.org/EIPS/eip-5646) natively.
+IStateFingerpringComputer.sol defines interface each State Fingerprint Computer contract has to implement. State Fingerprint Computers allow usage of dynamic assets in the PWN Protocol that don't implement [ERC-5646](https://eips.ethereum.org/EIPS/eip-5646) natively.
 
 ## 2. Important links
 

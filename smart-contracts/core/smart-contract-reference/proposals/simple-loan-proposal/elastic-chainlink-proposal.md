@@ -46,85 +46,91 @@ This function takes five arguments supplied by the caller:
 
 ```solidity
 function acceptProposal(
-    address acceptor,
-    uint256 refinancingLoanId,
-    bytes calldata proposalData,
-    bytes32[] calldata proposalInclusionProof,
-    bytes calldata signature
-) override external returns (bytes32 proposalHash, PWNSimpleLoan.Terms memory loanTerms) {
-    // Decode proposal data
-    (Proposal memory proposal, ProposalValues memory proposalValues) = decodeProposalData(proposalData);
+        address acceptor,
+        uint256 refinancingLoanId,
+        bytes calldata proposalData,
+        bytes32[] calldata proposalInclusionProof,
+        bytes calldata signature
+    ) override external returns (bytes32 proposalHash, PWNSimpleLoan.Terms memory loanTerms) {
+        // Decode proposal data
+        (Proposal memory proposal, ProposalValues memory proposalValues) = decodeProposalData(proposalData);
 
-    // Make proposal hash
-    proposalHash = _getProposalHash(PROPOSAL_TYPEHASH, _erc712EncodeProposal(proposal));
+        // Make proposal hash
+        proposalHash = _getProposalHash(PROPOSAL_TYPEHASH, _erc712EncodeProposal(proposal));
 
-    // Check min credit amount
-    if (proposal.minCreditAmount == 0) {
-        revert MinCreditAmountNotSet();
+        // Check min credit amount
+        if (proposal.minCreditAmount == 0) {
+            revert MinCreditAmountNotSet();
+        }
+
+        // Check sufficient credit amount
+        if (proposalValues.creditAmount < proposal.minCreditAmount) {
+            revert InsufficientCreditAmount({ current: proposalValues.creditAmount, limit: proposal.minCreditAmount });
+        }
+
+        // Calculate collateral amount
+        uint256 collateralAmount = getCollateralAmount(
+            proposal.creditAddress,
+            proposalValues.creditAmount,
+            proposal.collateralAddress,
+            proposal.feedIntermediaryDenominations,
+            proposal.feedInvertFlags,
+            proposal.loanToValue
+        );
+
+        ProposalValuesBase memory proposalValuesBase = ProposalValuesBase({
+            refinancingLoanId: refinancingLoanId,
+            acceptor: acceptor,
+            acceptorControllerData: proposalValues.acceptorControllerData
+        });
+
+        // Try to accept proposal
+        _acceptProposal(
+            proposalHash,
+            proposalInclusionProof,
+            signature,
+            ProposalBase({
+                collateralAddress: proposal.collateralAddress,
+                collateralId: proposal.collateralId,
+                checkCollateralStateFingerprint: proposal.checkCollateralStateFingerprint,
+                collateralStateFingerprint: proposal.collateralStateFingerprint,
+                creditAmount: proposalValues.creditAmount,
+                availableCreditLimit: proposal.availableCreditLimit,
+                utilizedCreditId: proposal.utilizedCreditId,
+                expiration: proposal.expiration,
+                acceptorController: proposal.acceptorController,
+                acceptorControllerData: proposal.acceptorControllerData,
+                proposer: proposal.proposer,
+                isOffer: proposal.isOffer,
+                refinancingLoanId: proposal.refinancingLoanId,
+                nonceSpace: proposal.nonceSpace,
+                nonce: proposal.nonce,
+                loanContract: proposal.loanContract
+            }),
+            proposalValuesBase
+        );
+
+        // Create loan terms object
+        loanTerms = PWNSimpleLoan.Terms({
+            lender: proposal.isOffer ? proposal.proposer : acceptor,
+            borrower: proposal.isOffer ? acceptor : proposal.proposer,
+            duration: _getLoanDuration(proposal.durationOrDate),
+            collateral: MultiToken.Asset({
+                category: proposal.collateralCategory,
+                assetAddress: proposal.collateralAddress,
+                id: proposal.collateralId,
+                amount: collateralAmount
+            }),
+            credit: MultiToken.ERC20({
+                assetAddress: proposal.creditAddress,
+                amount: proposalValues.creditAmount
+            }),
+            fixedInterestAmount: proposal.fixedInterestAmount,
+            accruingInterestAPR: proposal.accruingInterestAPR,
+            lenderSpecHash: proposal.isOffer ? proposal.proposerSpecHash : bytes32(0),
+            borrowerSpecHash: proposal.isOffer ? bytes32(0) : proposal.proposerSpecHash
+        });
     }
-
-    // Check sufficient credit amount
-    if (proposalValues.creditAmount < proposal.minCreditAmount) {
-        revert InsufficientCreditAmount({ current: proposalValues.creditAmount, limit: proposal.minCreditAmount });
-    }
-
-    // Calculate collateral amount
-    uint256 collateralAmount = getCollateralAmount(
-        proposal.creditAddress,
-        proposalValues.creditAmount,
-        proposal.collateralAddress,
-        proposal.feedIntermediaryDenominations,
-        proposal.feedInvertFlags,
-        proposal.loanToValue
-    );
-
-    // Try to accept proposal
-    _acceptProposal(
-        acceptor,
-        refinancingLoanId,
-        proposalHash,
-        proposalInclusionProof,
-        signature,
-        ProposalBase({
-            collateralAddress: proposal.collateralAddress,
-            collateralId: proposal.collateralId,
-            checkCollateralStateFingerprint: proposal.checkCollateralStateFingerprint,
-            collateralStateFingerprint: proposal.collateralStateFingerprint,
-            creditAmount: proposalValues.creditAmount,
-            availableCreditLimit: proposal.availableCreditLimit,
-            utilizedCreditId: proposal.utilizedCreditId,
-            expiration: proposal.expiration,
-            allowedAcceptor: proposal.allowedAcceptor,
-            proposer: proposal.proposer,
-            isOffer: proposal.isOffer,
-            refinancingLoanId: proposal.refinancingLoanId,
-            nonceSpace: proposal.nonceSpace,
-            nonce: proposal.nonce,
-            loanContract: proposal.loanContract
-        })
-    );
-
-    // Create loan terms object
-    loanTerms = PWNSimpleLoan.Terms({
-        lender: proposal.isOffer ? proposal.proposer : acceptor,
-        borrower: proposal.isOffer ? acceptor : proposal.proposer,
-        duration: _getLoanDuration(proposal.durationOrDate),
-        collateral: MultiToken.Asset({
-            category: proposal.collateralCategory,
-            assetAddress: proposal.collateralAddress,
-            id: proposal.collateralId,
-            amount: collateralAmount
-        }),
-        credit: MultiToken.ERC20({
-            assetAddress: proposal.creditAddress,
-            amount: proposalValues.creditAmount
-        }),
-        fixedInterestAmount: proposal.fixedInterestAmount,
-        accruingInterestAPR: proposal.accruingInterestAPR,
-        lenderSpecHash: proposal.isOffer ? proposal.proposerSpecHash : bytes32(0),
-        borrowerSpecHash: proposal.isOffer ? bytes32(0) : proposal.proposerSpecHash
-    });
-}
 ```
 
 </details>
@@ -165,13 +171,13 @@ This function returns supplied proposals hash according to [EIP-712](https://eip
 
 This function takes one argument supplied by the caller:
 
-* `Proposal calldata`**`proposal`** - Proposal struct to be hashed
+* `Proposal calldata`**`proposal`** - [Proposal](elastic-chainlink-proposal.md#proposal-struct) struct to be hashed
 
 #### Implementation
 
 ```solidity
 function getProposalHash(Proposal calldata proposal) public view returns (bytes32) {
-    return _getProposalHash(PROPOSAL_TYPEHASH, abi.encode(proposal));
+    return _getProposalHash(PROPOSAL_TYPEHASH, _erc712EncodeProposal(proposal));
 }
 ```
 
@@ -187,8 +193,8 @@ Function to encode a proposal struct and proposal values.
 
 This function takes two arguments supplied by the caller:
 
-* `Proposal memory`**`proposal`** - Proposal struct to be encoded
-* `ProposalValues memory`**`proposalValues`** - ProposalValues struct to be encoded
+* `Proposal memory`**`proposal`** - [Proposal](elastic-chainlink-proposal.md#proposal-struct) struct to be encoded
+* `ProposalValues memory`**`proposalValues`** - [ProposalValues](elastic-chainlink-proposal.md#proposalvalues-struct) struct to be encoded
 
 #### Implementation
 
@@ -213,7 +219,7 @@ Function to decode an encoded proposal struct and proposal values.
 
 This function takes one argument supplied by the caller:
 
-* `bytes memory`**`proposalData`** - Encoded proposal and proposal values structs
+* `bytes memory`**`proposalData`** - Encoded [Proposal](elastic-chainlink-proposal.md#proposal-struct) and [ProposalValues](elastic-chainlink-proposal.md#proposalvalues-struct) structs
 
 #### Implementation
 
@@ -358,29 +364,34 @@ This error has two parameters:
 
 ### `Proposal` struct
 
-| Parameter                         | Type                  | Description                                    |
-| --------------------------------- | --------------------- | ---------------------------------------------- |
-| `collateralCategory`              | `MultiToken.Category` | Collateral type (0=ERC20, 1=ERC721, 2=ERC1155) |
-| `collateralAddress`               | `address`             | Collateral token address                       |
-| `collateralId`                    | `uint256`             | Collateral token ID (0 for ERC20)              |
-| `checkCollateralStateFingerprint` | `bool`                | Enable ERC-5646 state verification             |
-| `collateralStateFingerprint`      | `bytes32`             | ERC-5646 state fingerprint                     |
-| `creditAddress`                   | `address`             | Loan credit token address                      |
-| `feedIntermediaryDenominations`   | `address[]`           | Chainlink price feed conversion path           |
-| `feedInvertFlags`                 | `bool[]`              | Flags for inverted price feeds                 |
-| `loanToValue`                     | `uint256`             | LTV ratio (6231 = 62.31%)                      |
-| `minCreditAmount`                 | `uint256`             | Minimum borrowable credit                      |
-| `availableCreditLimit`            | `uint256`             | Maximum credit pool for multiple accepts       |
-| `utilizedCreditId`                | `bytes32`             | Shared credit utilization identifier           |
-| `fixedInterestAmount`             | `uint256`             | Minimum interest payment                       |
-| `accruingInterestAPR`             | `uint24`              | APR with 2 decimals                            |
-| `durationOrDate`                  | `uint32`              | Loan duration (seconds) or end timestamp       |
-| `expiration`                      | `uint40`              | Proposal expiration timestamp                  |
-| `allowedAcceptor`                 | `address`             | Whitelisted acceptor address                   |
-| `proposer`                        | `address`             | Proposal creator address                       |
-| `proposerSpecHash`                | `bytes32`             | Proposer-specific data hash                    |
-| `isOffer`                         | `bool`                | True=loan offer, False=loan request            |
-| `refinancingLoanId`               | `uint256`             | ID of loan being refinanced                    |
-| `nonceSpace`                      | `uint256`             | Nonce grouping identifier                      |
-| `nonce`                           | `uint256`             | Proposal uniqueness nonce                      |
-| `loanContract`                    | `address`             | Associated loan contract address               |
+| Parameter                         | Type                     | Description                                                                                                                         |
+| --------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `collateralCategory`              | `MultiToken.Category`    | Collateral type (0=ERC20, 1=ERC721, 2=ERC1155)                                                                                      |
+| `collateralAddress`               | `address`                | Collateral token address                                                                                                            |
+| `collateralId`                    | `uint256`                | Collateral token ID (0 for ERC20)                                                                                                   |
+| `checkCollateralStateFingerprint` | `bool`                   | Enable ERC-5646 state verification                                                                                                  |
+| `collateralStateFingerprint`      | `bytes32`                | ERC-5646 state fingerprint                                                                                                          |
+| `creditAddress`                   | `address`                | Loan credit token address                                                                                                           |
+| `feedIntermediaryDenominations`   | `address[]`              | Chainlink price feed conversion path                                                                                                |
+| `feedInvertFlags`                 | `bool[]`                 | Flags for inverted price feeds                                                                                                      |
+| `loanToValue`                     | `uint256`                | LTV ratio (6231 = 62.31%)                                                                                                           |
+| `minCreditAmount`                 | `uint256`                | Minimum borrowable credit                                                                                                           |
+| `availableCreditLimit`            | `uint256`                | Maximum credit pool for multiple accepts                                                                                            |
+| `utilizedCreditId`                | `bytes32`                | Shared credit utilization identifier                                                                                                |
+| `fixedInterestAmount`             | `uint256`                | Minimum interest payment                                                                                                            |
+| `accruingInterestAPR`             | `uint24`                 | APR with 2 decimals                                                                                                                 |
+| `durationOrDate`                  | `uint32`                 | Loan duration (seconds) or end timestamp                                                                                            |
+| `expiration`                      | `uint40`                 | Proposal expiration timestamp                                                                                                       |
+| `address`                         | `acceptorController`     | Address of [Acceptor Controller](../../peripheral-contracts/acceptor-controller/) contract that will verify submitted acceptor data |
+| `bytes`                           | `acceptorControllerData` | Data provided by proposer to be verified by [Acceptor Controller](../../peripheral-contracts/acceptor-controller/)                  |
+| `proposer`                        | `address`                | Proposal creator address                                                                                                            |
+| `proposerSpecHash`                | `bytes32`                | Proposer-specific data hash                                                                                                         |
+| `isOffer`                         | `bool`                   | True=loan offer, False=loan request                                                                                                 |
+| `refinancingLoanId`               | `uint256`                | ID of loan being refinanced                                                                                                         |
+| `nonceSpace`                      | `uint256`                | Nonce grouping identifier                                                                                                           |
+| `nonce`                           | `uint256`                | Proposal uniqueness nonce                                                                                                           |
+| `loanContract`                    | `address`                | Associated loan contract address                                                                                                    |
+
+### `ProposalValues` struct
+
+<table><thead><tr><th width="156.09421454876235">Type</th><th width="243.45656287647148">Name</th><th>Comment</th></tr></thead><tbody><tr><td><code>uint256</code></td><td><code>creditAmount</code></td><td>Amount of credit to use from the available credit limit</td></tr><tr><td><code>bytes</code></td><td><code>acceptorControllerData</code></td><td>Data provided by proposal acceptor to be passed to the acceptor controller if defined in the <a href="elastic-chainlink-proposal.md#proposal-struct">Proposal</a> struct</td></tr></tbody></table>
