@@ -6,7 +6,7 @@ IPWNAcceptorController.sol defines an interface each Acceptor Controller contrac
 
 ## 2. Important links
 
-{% embed url="https://github.com/PWNDAO/pwn_contracts/blob/43e7af8974fdc6c29c38cb26f01bf61f986c4ddf/src/interfaces/IPWNAcceptorController.sol" %}
+{% embed url="https://github.com/PWNDAO/pwn_protocol/blob/v1.4/src/interfaces/IPWNAcceptorController.sol" %}
 
 ## 3. Implementation
 

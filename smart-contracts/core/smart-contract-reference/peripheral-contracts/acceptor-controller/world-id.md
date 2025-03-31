@@ -10,7 +10,7 @@ For more information about World ID please refer to the [World Docs](https://doc
 
 ## 2. Important links
 
-{% embed url="https://github.com/PWNDAO/pwn_contracts_periphery/blob/d35ab02494016640df558358c2cee8b0b08e9c5d/src/acceptor-controller/WorldIdAcceptorController.sol" %}
+{% embed url="https://github.com/PWNDAO/pwn_protocol_periphery/blob/world-id/src/acceptor-controller/WorldIdAcceptorController.sol" %}
 
 ## 3. Contract details
 
